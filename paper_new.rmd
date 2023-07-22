@@ -1,0 +1,1439 @@
+---
+title: "Expected travel time delay and weather conditions"
+author: "Maria Osipenko"
+date: "`r Sys.Date()`"
+output:
+ bookdown::pdf_document2:
+    toc: false
+    fig_caption: yes
+    keep_tex: true
+    link-citations: true
+bibliography: [references.bib] 
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Background
+
+Models of optimal departure time choice contain frequently a scheduling component, where the disutility or costs from early or late arrival weighted by preference parameters come into play. The vast majority of those models builds upon an asymmetric linear scheduling part (@fosgerau2010, @zhang2016, @guo2017, @li2019, @jin2020). Taking the utility approach of @fosgerau2010, one ahs:
+
+\begin{equation}U_1(d,T) = -\{\alpha T + \beta(d-T)\mathbf 1_{T<d} + \gamma (T-d)\mathbf 1_{T\geq d}\}, (\#eq:u1)
+\end{equation}
+
+where $T$ is random travel time with cumulative distribution function $F$, the preferred arrival time is normalized to $0$, and $-d$, $d>0$ is the departure time to choose.
+The optimal departure time has been shown to be equal to $d_1^* = \mu + \sigma F^{-1}\left(\frac{\gamma}{\beta+\gamma}\right)$ in @fosgerau2010. This type of utility comes with the assumption of strictly increasing cumulative distribution function $F$ of the travel time $T$, such that the inverse $F^{-1}\left(\frac{\gamma}{\beta+\gamma}\right)$ for all possible preference parametrizations $\beta$ and $\gamma$ exists. That is, this scheduling approach does not work in case of discrete travel time distributions or mixture distributions with a discrete component as in @depalma2006. The authors  in @depalma2006 sensibly model the travel time distribution as a mixture of a continuous part on bad days and a discrete component on good days. For their analysis of risk preferences and information value, they use the classical mean-variance and mean-deviation utility functions, as well as standard utilities with constant absolute and constant relative risk aversion. Later in the generalized setting, @depalma2012 assume a differentiable utility function, which rules out the specification in \@ref(eq:u1). The later, however arguably describes the scheduling choice more "authentically".
+
+In this paper, we propose an alternative specification of the scheduling part. Concretely, we define:
+\begin{equation}U_2(d,T) = -\{\alpha T + \beta(d-T)^2\mathbf 1_{T<d} + \gamma (T-d)^2\mathbf 1_{T\geq d}\} (\#eq:u2)
+\end{equation}
+with asymmetric *quadratic* loss on the early or late arrival. In this preferences formulation, the marginal disutility increases along with the delay magnitude, which may describe the preferences of at least some commuters in a more consistent way. In fact, this continuously differentiable preference specification fulfill the assumptions of @smith1984 and @daganzo1985 for existence and uniqueness of equilibrium in a single bottleneck model. It also satisfies the requirement of @depalma2012 and their equilibrium analysis with risk aversion and information value.
+
+It turns out, that both preference specifications in \@ref(eq:u1) and \@ref(eq:u2) share the property, that the optimal departure time choices correspond to specific *tail indices* of the travel time distribution. For the first specification in \@ref(eq:u1), these are the *quantiles* and for the second specification in \@ref(eq:u2), these are the *expectiles* of the travel time $T$. The asymmetric quadratic version of the scheduling preferences and the fact, the the solutions to the expected utility maximization problem are quantiles and expectiles respectively seem to have been left unraised explicitly, in the previous literature.\footnote{Fosgerau and Karlström (2010) do mention that the distribution of standardised travel time enter the optimal departure time through its quantile.} Moreover, both types of scheduling preferences are related to each other via the quantile-expectile correspondence (@jones1994), whilst the second version in \@ref(eq:u2) describes a richer class of preferences compared to the first one.
+
+In this paper, we analyse and compare the two utility specifications of scheduling preferences: the linear one in \@ref(eq:u1) and the quadratic one in \@ref(eq:u2), where the later "cures" the deficiencies of the first one. That is, in the next section, we show that the optimal departure times are quantiles for the linear and expectiles for the quadratic case. We also show that the two utility specifications are linked through the concept of quantile-expectile correspondence and demonstrate, that the new asymmetric quadratic class is a richer one, in the sense that it covers the preferences in \@ref(eq:u1) as a special case.  We derive the travel time reliability ratios to quantify the value of travel time reliability for both specifications in section 3. Using the travel time data of Montreal, we compare in section 4 the optimal choices corresponding to the two utility specifications and the resulting travel time reliability ratios based on the fitted mixture distribution with three beta distribution components. Finally, we conclude and discuss further research directions.
+
+# Asymmetric scheduling preferences
+
+<!--@fosgerau2010 uses the so call scheduling utility and derives the optimal departure time in a mean-variance framework. @li2019 proposes a nonparametric approach to estimate the travel time reliability ratio using its connection to conditional value at risk. @zhang2016 uses the same concept of penalties for late and early arrival to find an optimal travel path for risk averse travelers based on stochastic orders between candidate routes. @jin2020 use analogously defined scheduling for their optimal departure choice problem.-->
+Consider a planer with utility function depending on random travel time $T$ with realizations $t\in\mathbb R_+$ and on the departure time $-d$ for $d>0$ with the preferred arrival time normalized to $0$. According to the scheduling approach of @fosgerau2010, as already specified in \@ref(eq:u1):
+
+$$U_1(d,T) = -\{\alpha T + \beta(d-T)\mathbf 1_{T<d} + \gamma (T-d)\mathbf 1_{T\geq d}\}$$
+
+for  $\gamma>\beta>0$ for an equilibrium state to be reached (@small1982, @small2015). In this formulation, both early and late arrivals increase the disutility of the planer in a **linear** manner with the marginal disutility of early arrival being equal to $\beta$ and the marginal disutility of late arrival being equal to $\gamma$. Note, that the utility decrease is asymmetric regarding the type of delay (early or late).   
+
+The asymmetric linear loss may be unrealistic in many situations, because marginal disutility of early delays or late delays is constant and does not depend on the magnitude of the delay. @enide2006 for instance find that extremely long travel times influence significantly the route choice. When the marginal disutility increases along with the delay magnitude and an asymmetric **quadratic** loss would describe such preferences in a more consistent way.  In fact, such specification of the planer utility function even simplifies the computation of the optimal departure time, as we show later. The asymmetric quadratic version $U_2(d,T)$ mentioned previously in \@ref(eq:u2) reads:
+
+$$U_2(d,T) = -\{\alpha T + \beta(d-T)^2\mathbf 1_{T<d} + \gamma (T-d)^2\mathbf 1_{T\geq d}\}$$
+The marginal disutility of early arrival ($d>t$) becomes $\beta (d-t)$ and the marginal disutility of late arrival ($d\leq t$) becomes $\gamma (t-d)$.
+
+The later formulation of preferences in \@ref(eq:u2) <!--implies higher risk aversion level supported empirically in @boerjesson2012 and--> has the advantage of being differentiable with respect to $d$, which is a condition of uniqueness of the resulting equilibrium distribution of arrivals at a single bottleneck model (@daganzo1985). Moreover, both utility functions are reformulations of cost functions in departure time choice problems in single bottlenecks as in @lindsey2004.
+
+We assume, that planer maximizes her expected utility, which is in this case ($\mathbb E(\cdot)$ denotes the expectation with respect to the distribution function of $T$, $F$):
+
+- **linear asymmetric case** 
+\begin{equation}\mathbb EU_1(d,T) = -\left[\alpha \mathbb ET + \beta\mathbb E\left\{(d-T)\mathbf 1_{T<d} \right\}+ \gamma \mathbb E\left\{(T-d)\mathbf 1_{T\geq d}\right\}\right]. (\#eq:eu1)
+\end{equation}
+
+- **quadratic asymmetric case**
+\begin{equation}
+\mathbb EU_2(d,T) = -\left[\alpha \mathbb ET + \beta\mathbb E\left\{(d-T)^2\mathbf 1_{T<d} \right\}+ \gamma \mathbb E\left\{(T-d)^2\mathbf 1_{T\geq d}\right\}\right]. (\#eq:eu2)
+\end{equation}
+
+Both utility formulations fall under the mean-dispersion framework (@engelson2016) with different notions of dispersion used. For $\beta=\gamma$, \@ref(eq:eu1) corresponds to a symmetric mean-absolute deviation utility and the optimal choice $d^*_1$ corresponds to the median of the travel times. For $\gamma>\beta$ it remains asymmetric, and the second term in the maximized utility $\mathbb EU^*_1(d_1^*,T)$ is an asymmetric version of absolute deviation termed in @tran2019 as the **$\tau$-deviation** (asymmetrically weighted deviation around the **$\tau$-quantile**). Similarly, for $\beta=\gamma$, \@ref(eq:eu2) becomes $\mathbb EU_2(d,T) = -\left[\alpha \mathbb ET + \beta\mathbb E\left\{(T-d)^2\right\}\right]$,
+which is maximized for $d_2^* = \mathbb ET$. Hence we recover the classical mean-variance utility $\mathbb EU^*_2(d_2^*,T)$ used by @jackson1982. For $\gamma>\beta$ the second term in the maximized utility $\mathbb EU^*_2(d_2^*,T)$ is a generalized version of the variance - **the $\tau$-variance** - around a certain tail index - **the $\tau$-expectile**. 
+
+
+
+```{r}
+#scheduling utility functions
+u<-function(t,d,alpha,beta, gamma, type = 1){
+  if(type%in%c(1,2)){
+    u<-alpha*mean(t) + beta*mean((d-t)^type*(d>t)) + gamma*mean((t-d)^type*(t>d))
+  }
+  else {stop("Invalid type argument! Please choose type equal to either 1 or 2.")}
+  return(-u)
+}
+```
+
+
+```{r}
+#for exponentially distributed $T$
+set.seed(123)
+t<-rexp(10000,0.01)
+d<-seq(50,400,0.05)
+type=2
+
+alpha<-2
+gamma<-6
+beta<-1
+
+uvec1<-uvec2<-rep(NA, length(d))
+
+for(j in 1:length(uvec1)){
+    uvec1[j]<-u(t, d=d[j], type=1, alpha=alpha, beta=beta, gamma=gamma)
+    uvec2[j]<-u(t, d=d[j], type=2, alpha=alpha, beta=beta, gamma=gamma)
+}
+
+# fun<-cbind(d,uvec)
+# fun[d>6&d<7,]
+
+```
+
+
+```{r}
+#compute the optimal departure time
+get_opt_departure<-function(t,tau, type=1){
+  if(type==2){
+    departure_time<-expectreg::expectile(t,tau)
+  } else {
+    departure_time<-quantile(t,tau)
+  }
+  names(departure_time)<-ifelse(type==1, "quantile","expectile")
+  return(departure_time)
+}
+
+tau<-gamma/(gamma+beta)
+departure_time<-c(get_opt_departure(t,tau,type=1),get_opt_departure(t,tau,type=2))
+#departure_time
+```
+
+<!--
+```{r figure1, fig.cap="An illustration of the asymmetric linear (left) and the asymmetric quadratic (right) planer utility functions (\\(\\beta=1,\\gamma=1.5\\)) with optimal departure times $d^*$ for exponentially distributed travel time \\(T\\) with intensity parameter \\(0.01\\)."}
+# #par(mfrow=c(1,2),xpd=T)
+# par(lwd=2,mfrow=c(1,2))
+# 
+# plot(d,uvec1, type="l", axes=F, ylab=bquote(EU[a](d,T)),lty=2, ylim=c(-500,-100))
+# lines(d,uvec2/100,lty=1)
+# points(d[which.max(uvec2)],max(uvec2)/100,col=2)
+# points(d[which.max(uvec1)],max(uvec1),col=2)
+# #text(d[which.max(uvec1)],max(uvec1), paste0("d*=",round(d[which.max(uvec1)],2)), pos=3)
+# text(d[which.max(uvec1)],max(uvec1), expression(paste(d[1]^"*")), pos=3)
+# text(d[which.max(uvec2)],max(uvec2)/100, expression(paste(d[2]^"*")), pos=3)
+# axis(1, at=c(50,100,150,200), labels=rep("",4))
+# axis(2, at=c(-500,-300,-100), labels=rep("",3))
+# legend("topright",lty=c(2,1), lwd=2,legend=c("a=1","a=2"))
+# 
+# # plot(d,uvec2, type="l",axes=F, ylab=bquote(EU[2](d,T)))
+# # points(d[which.max(uvec2)],max(uvec2),col=2)
+# # text(d[which.max(uvec2)],max(uvec2), paste0("d*=",round(d[which.max(uvec2)],2)), pos=3)
+# # axis(1)
+# # axis(2, at=seq(min(uvec2), max(uvec2),length.out=5), labels=rep("",5))
+```
+-->
+
+# Optimal departure time choice under asymmetric scheduling preferences
+
+In this section, we show that the optimal departure time turns to be equal to a certain quantile (see @koenker1978) in case of $U_1(d,T)$ and a certain expectile (see @newey1987) for $U_2(d,T)$ of the travel time distribution. The particular quantile or expectile levels depend on the asymmetry parameter ($\beta$ and $\gamma$) of planer's utility function. We, therefore briefly review the concepts of quantiles and expectiles in the following.
+
+## Quantiles and expectiles
+
+Quantiles and expectiles are real numbers which describe a distribution of a real random variable $X$. They generalize the median and the mean respectively to their asymmetric versions via the asymmetry index $\tau\in(0,1)$. For a suitable set of such indices $\tau\in(0,1)$ the associated sets of either quantiles $\{q_\tau(X)\}_{\tau\in(0,1)}$ or expectiles $\{e_\tau(X)\}_{\tau\in(0,1)}$ are capable of representing the entire distribution of a random variable.
+
+Both quantiles and expectiles can be viewed as minimizers of expectations of asymmetric norms (see e.g. @tran2019):
+\begin{align}
+\min_{c\in\mathbb R}\mathbb E_{F_X}||X-c||^a_{a,\tau}, \text{ for } a\in\{1,2\}, (\#eq:asnorm)
+\end{align}
+where $||x||^a_{a,\tau}=|x|^a\cdot\{\tau\mathbf 1_{x\geq 0}+(1-\tau)\mathbf 1_{x<0}\}$ is the asymmetric norm for $x\in\mathbb R$.
+That is, the $\tau$-quantile solves $q_\tau(X) = \arg\min_{q\in\mathbb R}\mathbb E_{F_X}||X-q||^1_{1,\tau}$ whereas the $\tau$-expectile solves $e_\tau(X) = \arg\min_{e\in\mathbb R}\mathbb E_{F_X}||X-e||^2_{2,\tau}$.
+
+Expectiles are uniquely defined for random variables with finite expectations, whereas for quantiles to be unique, we need a strictly increasing cumulative distribution function $F$. This creates difficulties in treating e.g. discrete distributions as the following example shows.
+
+::: {.example #ddqande name="Quantiles and expectiles of a two-value travel time distribution"}
+
+Consider random travel time $T$ with two values: $t_1$ with probability $p$ and $t_2$, $t_2-t_1>0$ with probability $1-p$\footnote{For instance, de Palma, Lindsey, and Picard (2012) specify in this way the distribution of travel times on an uncertain route intheir analysis.}. For example, on a ideal road link without congestion two speed regimes hold depending on whether the road surface is wet or not (or there is fog or not). Then $1-p$ could be  the probability of wet surface or the probability of rain.
+
+Since $\mathbb P(T\leq t) = 0$ for $t\in(-\infty,t_1)$, for any $\tau\in (0,p]$ the $\tau$-quantile is any number in the range $[0,t)$. Likewise, since $\mathbb P(T\leq t) = p$ for $t\in[t_1,t_2)$  and for any $\tau \in(p,1)$ it is any number in the range $[t_1,t_2)$. It is unclear whether and how much the $\tau$-quantile is affected by a change in $p$. 
+
+In case of expectiles using formulas (18) and (19) in @holzmann2016 we have:
+
+\[e_\tau = \frac{(1-\tau)t_1p+ \tau t_2(1-p)}{(1-\tau)p + \tau(1-p)}\]
+which is continuous and strictly increasing in $\tau$ (see Figure \@ref(fig:figex1)).
+
+```{r figex1, fig.cap = "Inverse expectile function and expectile values (below the $x$-axis) for a grid of $\tau$-values in case of a two-value discrete distribution."}
+t<-10
+l<-100
+p0<-0.9
+par(xpd=T)
+taus<-c(seq(0.01,0.99,0.01),0.999)
+mutau<-((1-taus)*t*p0 + taus*(t+l)*(1-p0))/((1-taus)*p0 + taus*(1-p0))
+plot(c(t,t+l),c(p0,1-p0),type="l",col=NA,axes=F,ylim=c(0,1),xlim=c(0,120),ylab="",xlab="")
+arrows(x0=t,y0=0,x1=t,y1=p0,code=0,lwd=2)
+arrows(x0=t+l,y0=0,x1=t+l,y1=1-p0,code=0,lwd=2)
+arrows(-10,0,120,0,code=2,length=0.1)
+arrows(0,-0.1,0,1.1,code=2,length=0.1)
+
+arrows(-0.1,1.03,120,1.03,code=0,lty=2)
+text(-0.1,1,"1",pos=2)
+arrows(-0.1,p0,t,p0,code=0,lty=2)
+arrows(-0.1,1-p0,t+l,1-p0,code=0,lty=2)
+text(-0.1,p0,"p",pos=2)
+text(-0.1,1-p0,"1-p",pos=2)
+text(t+l,0,bquote(t[2]),pos=1)
+text(t,0,bquote(t[1]),pos=1)
+lines(mutau,taus,pch="|",col=4)
+points(mutau,rep(-0.1,length(mutau)),pch="|",col=scales::alpha(4,0.6))
+text(60,-0.1,bquote(e[tau]),pos=1)
+arrows(55,-0.15,40,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
+arrows(65,-0.15,80,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
+text(60,-0.2,bquote(q[tau]),pos=1)
+text(65,-0.2,"?",pos=1)
+legend(70,0.5,col=c(4),lwd=c(1,1),legend=c(bquote(tau(e[tau]))),bty="n")
+```
+
+Since $\frac{\partial e_\tau}{\partial l} = \tau(1-p)>0$ it is also an increasing function of $l$. Since $\frac{\partial e_\tau}{\partial p} =(-l)\cdot \frac{ \tau (1-\tau)}  {\{\tau+p (1-2\tau )\}^2} <0$ $e_\tau$ decreases in $p$ or equivalent it increases in $1-p$ (see Figure \@ref(fig:figex11)).
+
+:::
+
+
+```{r figex11, fig.cap = "Expectile function for a two-value discrete distribution and changing $p$."}
+par(xpd=T)
+p1<-0.99
+mutau1<-((1-taus)*t*p1 + taus*(t+l)*(1-p1))/((1-taus)*p1 + taus*(1-p1))
+plot(taus,mutau,type="l",ylim=c(0,120), xlim=c(0,1.2),axes=F,xlab="", ylab="",col=4)
+lines(taus,mutau1,lty=2,col=4)
+arrows(0,-5,0,120,code=2,length=0.1)
+arrows(-0.05,0.05,1,0,code=2,length=0.1)
+legend(0.5,100,lty=c(1,2),legend=c(paste0("p = ",p0),paste0("p = ",p1)),bty="n")
+legend(0.5,70,col=c(4),lwd=c(1,1),legend=c(bquote(e[tau](tau))),bty="n")
+text(0.5,0,bquote(tau),pos=1)
+text(0,60,bquote(e[tau]),pos=2)
+```
+
+In the example above, we derive an explicit expression for $e_\tau$. However, this is not always possible and $e_\tau$ is represented in an implicit functional form based on the first order condition of \@ref(eq:asnorm) for $a=2$:
+
+\begin{align}
+\tau\mathbb E\{|Y-e_\tau|\mathbf 1_{Y>e_\tau}\} = (1-\tau)\mathbb E\{|Y-e_\tau|\mathbf 1_{Y\leq e_\tau}\}.(\#eq:etau)
+\end{align}
+
+Moreover, as $e_\tau$ is continuous, strictly increasing in $\tau$, and unique for each $\tau\in(0,1)$ for all distributions $F$ with finite expectation (@holzmann2016), there exist an inverse expectile function $\tau(e_\tau)$ which frequently does have an explicit functional form, convenient for the analysis. In fact, the inverse expectile function is itself a cumulative distribution function with a density, but it differs in general from the original $F$ as @philipps2022. Rearranging \@ref(eq:etau), we get the following expression for the inverse expectile function $\tau(\mu_\tau)$:
+
+\begin{align}
+\tau(e_\tau) &= \frac{\mathbb E\{|Y-e_\tau|\mathbf 1_{Y\leq e_\tau}\}} {\mathbb E\{|Y-e_\tau|\}} = \frac{\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\}}{2\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} - \mathbb E\{(Y-e_\tau)\}} (\#eq:tau)
+\end{align}
+
+::: {.example #duqande name="Quantiles and expectiles of a mixture of two uniform distribution with disjoint supports"}
+Consider another, perhaps, a more realistic example. The random travel time $T$ follows a mixture of uniform distributions with ranges $[a_1,a_2]$ and $[a_3, a_4]$ respectively and with mixing probability $p$. We assume that $a_1<a_2<a_3<a_4$ such that there is a "gap" in the support of the mixture distribution. Again, we could consider a  road link without congestion with two speed regimes depending on some exogenous event $I$ taking values $\{0,1\}$ with probability $p$ and $1-p$ respectively.  We think of $p$ large and $1-p$ small. 
+
+Let $F$ denote the cumulative distribution function of $T$. The quantile function for $\tau <p$ is $q_\tau = a_1 + \frac{a_2-a_1} p\tau$ and for $p<\tau$ it is $q_\tau = a_3 + \frac{a_4-a_3}{1-p}(\tau-p)$. However, when $\tau=p$ any value on $(a_2,a_3)$ is a valid candidate for the $p$-quantile. 
+
+Starting with (\@ref(eq:tau)) we compute the inverse expectile function $\tau(e_\tau)$ as:
+
+\[
+\tau(e_\tau)=\begin{cases}
+0, &e_\tau<a_1\\
+\frac{-\frac 12 \frac{p}{a_2-a_1}(a_1-e_\tau)^2}{-\frac{p}{a_2-a_1}(a_1-e_\tau)^2    -(\frac{p(a_1+a_2)}2 + \frac{(1-p)(a_3+a_4)}2 - e_\tau)}, & a_1\leq e_\tau<a_2,\\
+\frac{p\left(\frac{a_1 + a_2}2 - e_\tau\right)}{2p\left(\frac{a_1 + a_2}2 - e_\tau\right)  -(\frac{p(a_1+a_2)}2 + \frac{(1-p)(a_3+a_4)}2 - e_\tau)}, & a_2\leq e_\tau<a_3,\\
+\frac{p\left(\frac{a_1 + a_2}2 - e_\tau\right)-\frac 12 \frac{1-p}{a_4-a_3}(a_3-e_\tau)^2}{2p\left(\frac{a_1 + a_2}2 - e_\tau\right)-\frac{1-p}{a_4-a_3}(a_3-e_\tau)^2   -(\frac{p(a_1+a_2)}2 + \frac{(1-p)(a_3+a_4)}2 - e_\tau)}, & a_3\leq e_\tau<a_4,\\
+1, &e_\tau\geq a_4.
+\end{cases}\]
+
+The resulting expectile functions as functions of $\tau$ for different $p$ are presented in Figure \@ref(fig:figexp1).
+
+```{r}
+a1<-10
+b1<-20
+
+a2<-30
+b2<-110
+
+p0<-0.9
+mutaus<-seq(a1,b2,0.5)
+
+p1<-0.99
+
+tauf<-function(x,a1,b1,a2,b2,p){
+  Exe<-p*(a1+b1)/2+(1-p)*(a2+b2)/2 - x
+  if(x>=a1&x<=b1){
+    tau<- (-1/2*(p/(b1-a1)*(a1-x)^2)) / (-p/(b1-a1)*(a1-x)^2-Exe)
+  }else if(x>b1&x<a2){
+    tau<-(1/2*p*(b1+a1-2*x)) / (p*(b1+a1-2*x) - Exe)
+  } else if (x>=a2&x<=b2){
+    tau<-(1/2*p*(b1+a1-2*x) - 1/2*((1-p)/(b2-a2)*(a2-x)^2)) / (p*(b1+a1-2*x) - ((1-p)/(b2-a2)*(a2-x)^2) - Exe)
+  } else {
+    tau<-NA
+  }
+  return(tau)
+}
+taufs<-sapply(mutaus,tauf,a1=a1,b1=b1,a2=a2,b2=b2,p=p0)
+mutauss<-approx(taufs, mutaus, xout=taus)
+
+taufs1<-sapply(mutaus,tauf,a1=a1,b1=b1,a2=a2,b2=b2,p=p1)
+mutauss1<-approx(taufs1, mutaus, xout=taus)
+
+qtausf<-function(tau,a1,b1,a2,b2,p){
+  if(tau<p){
+    qtau<-a1+(b1-a1)*(tau/p)
+  } else if (tau>p){
+    qtau<-a2 +(b2-a2)*(tau /(1-p) - p/(1-p))
+  } else {
+    qtau<-NA
+  }
+  return(qtau)
+}
+qtauss<-sapply(taus,qtausf,a1=a1,b1=b1,a2=a2,b2=b2,p=p0)
+qtauss1<-sapply(taus,qtausf,a1=a1,b1=b1,a2=a2,b2=b2,p=p1)
+
+
+```
+
+
+
+```{r figexp1, fig.cap="Quantile and expectile functions for the mixture of two uniform distributions."}
+par(xpd=T)
+plot(c(a1,b1),c(p0,p0),type="l",axes=F,ylim=c(0,1.2),xlim=c(0,120),ylab="",xlab="",lwd=2)
+lines(c(a2,b2),c(1-p0,1-p0),lwd=2)
+arrows(a1,0,a1,p0,code=0,lty=2)
+arrows(b1,0,b1,p0,code=0,lty=2)
+arrows(a2,0,a2,1-p0,code=0,lty=2)
+arrows(b2,0,b2,1-p0,code=0,lty=2)
+
+arrows(-10,0,120,0,code=2,length=0.1)
+arrows(0,-0.1,0,1.1,code=2,length=0.1)
+
+arrows(-0.1,1,120,1,code=0,lty=2)
+text(-0.1,1,"1",pos=2)
+
+arrows(-0.1,p0,a1,p0,code=0,lty=2)
+arrows(-0.1,1-p0,a2,1-p0,code=0,lty=2)
+
+text(-0.1,p0,"p",pos=2)
+text(-0.1,1-p0,"1-p",pos=2)
+
+text(a1,0,bquote(a[1]),pos=1)
+text(a2,0,bquote(a[3]),pos=1)
+text(b1,0,bquote(a[2]),pos=1)
+text(b2,0,bquote(a[4]),pos=1)
+
+lines(mutauss$y,mutauss$x,pch="|",col=4,cex=0.5)
+#lines(mutauss1$y,mutauss1$x,pch="|",col=4,cex=0.5,lty=2)
+
+points(mutauss$y,rep(-0.1,length(taus)),pch="|",col=scales::alpha(4,0.4),cex=0.8)
+text(60,-0.12,expression(paste(e[tau] ,",", tau %in% "(0,1)")),pos=1)
+arrows(55,-0.15,40,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
+arrows(65,-0.15,80,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
+
+lines(qtauss[taus<p0],taus[taus<p0],pch="|",cex=0.5,col=2)
+lines(c(a2,qtauss[taus>p0]),c(p0,taus[taus>p0]),pch="|",cex=0.5,col=2)
+
+#lines(qtauss1[taus<p1],taus[taus<p1],pch="|",cex=0.5,col=2,lty=2)
+#lines(c(a2,qtauss1[taus>p1]),c(p1,taus[taus>p1]),pch="|",cex=0.5,col=2,lty=2)
+
+points(c(a2,qtauss),rep(-0.25,length(taus)+1),pch="|",col=scales::alpha(2,0.4),cex=0.8)
+text(60,-0.27,expression(paste(q[tau] ,",", tau %in% "(0,1)\\{p}")),pos=1)
+arrows(55,-0.3,40,-0.3,code=2,length=0.1,col=scales::alpha(2,0.6))
+arrows(65,-0.3,80,-0.3,code=2,length=0.1,col=scales::alpha(2,0.6))
+
+text(60,-0.35,bquote(q[p]),pos=1)
+text(65,-0.35," = ?",pos=1)
+legend(100,0.5,col=c(2,4),lwd=c(1,1),legend=c(bquote(tau(q[tau])),bquote(tau(e[tau]))),bty="n")
+```
+
+
+```{r figexp12, fig.cap = "Quantile and expectile functions for two scenarios of mixing parameter $p$ in the mixture of two uniform distributions."}
+par(xpd=T)
+plot(c(a1,b1),c(p0,p0),type="l",axes=F,ylim=c(0,1.2),xlim=c(0,110),ylab="",xlab="",lwd=2,col=NA)
+arrows(-10,0,120,0,code=2,length=0.1)
+arrows(0,-0.1,0,1.1,code=2,length=0.1)
+text(-0.1,1,bquote(tau),pos=2)
+text(a1,0,bquote(a[1]),pos=1)
+text(a2,0,bquote(a[3]),pos=1)
+text(b1,0,bquote(a[2]),pos=1)
+text(b2,0,bquote(a[4]),pos=1)
+#
+lines(mutauss$y,mutauss$x,pch="|",col=4,cex=0.5)
+lines(mutauss1$y,mutauss1$x,pch="|",col=4,cex=0.5,lty=2)
+#
+lines(qtauss[taus<p0],taus[taus<p0],pch="|",cex=0.5,col=2)
+lines(c(a2,qtauss[taus>p0]),c(p0,taus[taus>p0]),pch="|",cex=0.5,col=2)
+#
+lines(qtauss1[taus<p1],taus[taus<p1],pch="|",cex=0.5,col=2,lty=2)
+lines(c(a2,qtauss1[taus>p1]),c(p1,taus[taus>p1]),pch="|",cex=0.5,col=2,lty=2)
+#
+legend(100,0.5,col=c(2,4),lwd=c(1,1),legend=c(bquote(tau(q[tau])),bquote(tau(e[tau]))),bty="n")
+legend(70,0.5,lty=c(1,2),lwd=c(1,1),legend=c(paste0("p = ",p0),paste0("p = ",p1)),bty="n")
+```
+
+Figure \@ref(fig:figexp12) illustrates the change in expectile function when $p$ changes.
+For mixtures of $m$  disjoint (sorted) uniforms holds with mixing parameter vector $\mathbf p=(p_1,\ldots,p_m)^\top$ where $p_m=1-\sum_{i=1}^{m-1}p_i$ and support edges $a_1<a_2<\ldots<a_{m+1}$:
+
+\[\tau(e_\tau) = 
+\begin{cases}
+0,&e_\tau<a_1,\\
+\frac{-\frac 12\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2}  {-\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_1\leq e_\tau< a_2,\\
+\frac{\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2}  {\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_i\leq e_\tau< a_{i+1},i=2,\ldots, m\\
+1, &e_\tau\geq a_{m+1}.
+\end{cases}\]
+
+The derivations hereof are shown in the Appendix.
+:::
+
+
+The problematic in Example \@ref(exm:duqande) translates readily to the urban arterial roads travel times model of @zheng_fangfang2017, where for the oversaturated condition, the probability function of delay consists of several box shaped functions with bounded support, which may (or may not) overlap. The authors distinguish two regimes: undersaturated and oversaturated conditions. The resulting delay distribution is composed of a mixture of Dirac delta function on fixed free-flow time (or a countinous distribution of free-flow time) and several uniform delay distributions with bounded support representing the effects of traffic lights, traffic control or similar conditions.
+
+::: {.example #qdzheng name="Quantiles and expectiles of travel time distribution with discrete and continuous components"}
+
+Consider now travel time distribution type proposed by @zheng_fangfang2017, where there is a certain probability $0<p_0<1$ of no delay so that the free flow travel time $a_0$ is attained. In the same time, delays are possible and the delay distribution is a mixture of nonoverlapping uniform distributions with mixing parameter vector $\mathbf p=(p_1,\ldots,p_m)^\top$ where $p_m=1-\sum_{i=1}^{m-1}p_i-p_0$ and support edges $a_1<a_2<\ldots<a_{m+1}$.
+
+In this case the quantiles are well defined for $i=1,\ldots, m$ and $\tau\in(p_0,1)\setminus\{p_1,\ldots,p_m\}$ as:
+
+$$q_\tau = a_{i} + \frac{a_{i+1}-a_{i}}{p_i}(\tau-\sum_{k=1}^{i-1}p_{k} - p_0), p_i<\tau<p_{i+1}.$$
+
+The inverse expectile function is:
+
+\[\tau(e_\tau) = 
+\begin{cases}
+0,&e_\tau<a_0,\\
+(a_0-e_\tau)p_0,&a_0\leq e_\tau<a_1,\\
+\frac{(a_0-e_\tau)p_0-\frac 12\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2}  {(a_0-e_\tau)p_0-\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_1\leq e_\tau< a_2,\\
+\frac{(a_0-e_\tau)p_0+\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2}  {(a_0-e_\tau)p_0+\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_i\leq e_\tau< a_{i+1},i=2,\ldots, m\\
+1, &e_\tau\geq a_{m+1}.
+\end{cases}\]
+See Appendix for the derivation.
+```{r}
+a0<-5
+a1<-10
+b1<-20
+
+a2<-30
+b2<-110
+
+p00<-0.5
+p0<-0.9*(1-p00)
+mutaus<-seq(a0,b2,0.5)
+
+p1<-0.99*(1-p00)
+
+tauf<-function(x,a0,a1,b1,a2,b2,p00,p){
+  Exe<-p*(a1+b1)/2+(1-p)*(a2+b2)/2 - x
+  if(x>=a0&x<a1){
+    tau<-(a0-x)*p00
+  } else if(x>=a1&x<=b1){
+    tau<- ((a0-x)*p00-1/2*(p/(b1-a1)*(a1-x)^2)) / ((a0-x)*p00-p/(b1-a1)*(a1-x)^2-Exe)
+  }else if(x>b1&x<a2){
+    tau<-((a0-x)*p00+ 1/2*p*(b1+a1-2*x)) / ((a0-x)*p00+p*(b1+a1-2*x) - Exe)
+  } else if (x>=a2&x<=b2){
+    tau<-((a0-x)*p00+1/2*p*(b1+a1-2*x) - 1/2*((1-p)/(b2-a2)*(a2-x)^2)) / ((a0-x)*p00+p*(b1+a1-2*x) - ((1-p)/(b2-a2)*(a2-x)^2) - Exe)
+  } else {
+    tau<-NA
+  }
+  return(tau)
+}
+taufs<-sapply(mutaus,tauf,a0=a0,a1=a1,b1=b1,a2=a2,b2=b2,p00=p00,p=p0)
+mutauss<-approx(taufs, mutaus, xout=taus)
+
+taufs1<-sapply(mutaus,tauf,a0=a0,a1=a1,b1=b1,a2=a2,b2=b2,p00=p00,p=p1)
+mutauss1<-approx(taufs1, mutaus, xout=taus)
+
+qtausf<-function(tau,a0,a1,b1,a2,b2,p00,p){
+  if (tau<p00+p&tau>p00){
+    qtau<-a1+(b1-a1)/(p)*(tau - p00)
+  } else if (tau>p00+p){
+    qtau<-a2 +(b2-a2)/(1-p-p00)*(tau - (p+p00))
+  } else {
+    qtau<-NA
+  }
+  return(qtau)
+}
+qtauss<-sapply(taus,qtausf,a0=a0,a1=a1,b1=b1,a2=a2,b2=b2,p00=p00,p=p0)
+qtauss1<-sapply(taus,qtausf,a0=a0,a1=a1,b1=b1,a2=a2,b2=b2,p00=p00,p=p1)
+
+
+```
+
+```{r, figexp2, fig.cap="Quantile and expectile functions for the mixture of a point mass and two uniform distributions."}
+par(xpd=T)
+plot(c(a1,b1),c(p0,p0),type="l",axes=F,ylim=c(0,1.2),xlim=c(0,120),ylab="",xlab="",lwd=2)
+lines(c(a2,b2),c(1-p0-p00,1-p0-p00),lwd=2)
+
+arrows(a0,0,a0,p00,code=0,lty=1,lwd=2)
+arrows(a1,0,a1,p0,code=0,lty=2)
+arrows(b1,0,b1,p0,code=0,lty=2)
+arrows(a2,0,a2,1-p0-p00,code=0,lty=2)
+arrows(b2,0,b2,1-p0-p00,code=0,lty=2)
+
+arrows(-10,0,120,0,code=2,length=0.1)
+arrows(0,-0.1,0,1.1,code=2,length=0.1)
+
+arrows(-0.1,1,120,1,code=0,lty=2)
+text(-0.1,1,"1",pos=2)
+
+arrows(-0.1,p00,a0,p00,code=0,lty=2)
+arrows(-0.1,p0,a1,p0,code=0,lty=2)
+arrows(-0.1,1-p0-p00,a2,1-p0-p00,code=0,lty=2)
+
+text(-0.1,p00,bquote(p[0]),pos=2)
+text(-0.1,p0,"p",pos=2)
+text(-0.1,1-p0-p00,expression(paste("1-p-",p[0])),pos=2)
+
+text(a0,0,bquote(a[0]),pos=1)
+text(a1,0,bquote(a[1]),pos=1)
+text(a2,0,bquote(a[3]),pos=1)
+text(b1,0,bquote(a[2]),pos=1)
+text(b2,0,bquote(a[4]),pos=1)
+
+lines(mutauss$y,mutauss$x,pch="|",col=4,cex=0.5)
+#lines(mutauss1$y,mutauss1$x,pch="|",col=4,cex=0.5,lty=2)
+
+points(mutauss$y,rep(-0.1,length(taus)),pch="|",col=scales::alpha(4,0.4),cex=0.8)
+text(60,-0.12,expression(paste(e[tau] ,",", tau %in% "(0,1)")),pos=1)
+arrows(55,-0.15,40,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
+arrows(65,-0.15,80,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
+
+lines(qtauss[taus<p0+p00],taus[taus<p0+p00],pch="|",cex=0.5,col=2)
+lines(c(a2,qtauss[taus>p0+p00]),c(p0+p00,taus[taus>p0+p00]),pch="|",cex=0.5,col=2)
+
+#lines(qtauss1[taus<p1],taus[taus<p1],pch="|",cex=0.5,col=2,lty=2)
+#lines(c(a2,qtauss1[taus>p1]),c(p1,taus[taus>p1]),pch="|",cex=0.5,col=2,lty=2)
+
+points(c(a2,qtauss),rep(-0.25,length(taus)+1),pch="|",col=scales::alpha(2,0.4),cex=0.8)
+text(60,-0.27,expression(paste(q[tau] ,",", tau %in% "(",p[0], ",1)\\{",p[1],"...",p[m],"}")),pos=1)
+arrows(55,-0.3,40,-0.3,code=2,length=0.1,col=scales::alpha(2,0.6))
+arrows(65,-0.3,80,-0.3,code=2,length=0.1,col=scales::alpha(2,0.6))
+
+legend(100,0.5,col=c(2,4),lwd=c(1,1),legend=c(bquote(tau(q[tau])),bquote(tau(e[tau]))),bty="n")
+```
+
+For illustration purposes, we take over the setting of Example \@ref(exm:duqande) with the only difference that we add $a_0$ to the mixture with point probability $p_0$. Figure \@ref(fig:figexp2) illustrates the resulting departure time choices as quatiles (where uniquely defined) and expectiles of the mixture distribution.
+
+In this example, we have a bunch of $\tau$-values, for which quantiles are not well defined. On the other hand, expectiles are still capable of capturing these kind of distributions.
+
+As also explored in @zheng_fangfang2017, the point mass at $a_0$ can be substituted by a distribution centered at $a_0$, since different vehicle or driver types may exhibit slightly varying free-flow times.
+
+:::
+
+Note that instead of uniform mixture components, one can use more general forms offered for bounded supports  e.g. by four parameter beta distributions also used in @jabari2019 for travel times modelling. In this case the form of $\tau(e_\tau)$ becomes more complicated, however numeric computation based on Equation \@ref(eq:tau) is still feasible/possible.
+
+Being quantile-alike tail indices, expectiles share some properties of quantiles, as location and scale equivariance.
+
+::: {#propprops .proposition name="Location and scale equivariance of quantiles and expectiles"}
+Let $Y\in\mathbb R$ be a random variable with finite expectation, then for $\tau  \in (0,1)$ and $s>0$
+
+- $q_\tau(sY+m) = sq_\tau(Y) + m$ (follows from location and scale equivariance of the quantile loss function) and
+
+- $e_\tau(sY+m)=se_\tau(Y) + m$ (Theorem 1 in @newey1987).
+
+with $\tau=\frac{\gamma}{\gamma+\beta}.$
+:::
+
+These properties are also useful for analysing the role of travel time mean and variance for optimal departure time plans. 
+
+<!--For instance, @zheng_fangfang2017 propose the following decomposition model for travel time on link $i$, $T_i$:
+
+\[T_i = T_i    ^   r + \sigma_i W_i\]
+
+with $T_i    ^   r$ being delay-free travel time and $W_i$ representing the delay component\footnote{In the proposed model of @zheng_fangfang2017 $\sigma_i$ is not explicitely parameterized.}. Assuming, a deterministic nature of $T_i    ^   r$ or conditioning thereon, we have
+
+\[e_\tau(T_i) = T_i    ^   r + \sigma_i e_\tau(W_i).\]
+-->
+
+Another useful property is the existence of the correspondence between (well defined) quantiles and expectiles (see @jones1994, @yao1996 and @waltrup2015) of a distribution. 
+
+
+::: {#corr .proposition name="Quantile-expectile correspondence"}
+
+For each well defined $\tau_1$-quantile, there exist $\tau_2(\tau_1)\in(0,1)$, such that $q_{\tau_1}(Y) = e_{\tau_2(\tau_1)}(Y).$
+The correspondence function between quantile and expectiles of a random Variable $T\in \mathbb R$ with distribution function $F$, $\tau_2(\tau_1):(0,1)\rightarrow(0,1)$ is:
+\[\tau_2 (\tau_1) = \frac{-q_{\tau_1}\tau_1 + G(q_{\tau_1})}{-\mathbb EY + 2G(q_{\tau_1})+q_{\tau_1}(1-2\tau_1)},\]
+where $G(q) = \int_{-\infty}^qt~dF(t)$ is the partial moment function\footnote{Yao and Tong (1996) proof the result in the regression context.}.
+
+:::
+```{proof}
+
+For any distribution $F$ with finite mean, the expectile function $\tau_2\rightarrow e_{\tau_2}(F)$ is continuos, stricktly increasing and has range $\{y\in\mathbb R: 0<F(y)<1\}$. So for each well defined quantile $q_{\tau_1}=F^{-1}(\tau_1)$ there exists $\tau_2$ such that 
+$$q_{\tau_1}(F) = e_{\tau_2}(F).$$
+
+Following @yao1996 and using the following identity for $\tau_2$:
+$$\tau_2 = \frac{\mathbb E(|Y-e_{\tau_2}|\mathbf 1_{Y\leq e_{\tau_2}})}{\mathbb E(|Y-e_{\tau_2}|\mathbf 1_{Y\leq e_{\tau_2}}) + \mathbb E(|Y-e_{\tau_2}|\mathbf 1_{Y> e_{\tau_2}})},$$
+
+we get
+$$\tau_2 (\tau_1) = \frac{\mathbb E(|Y-q_{\tau_1}|\mathbf 1_{Y\leq q_{\tau_1}})}{\mathbb E(|Y-q_{\tau_1}|\mathbf 1_{Y\leq q_{\tau_1}}) + \mathbb E(|Y-q_{\tau_1}|\mathbf 1_{Y> q_{\tau_1}})}=$$
+
+$$= \frac{-\mathbb E(Y\mathbf 1_{Y\leq q_{\tau_1}})+q_{\tau_1}\tau_1}{\mathbb E(Y\mathbf 1_{Y\leq q_{\tau_1}})-q_{\tau_1}\tau_1 + \mathbb E(Y\mathbf 1_{Y> q_{\tau_1}})-q_{\tau_1}(1-\tau_1)}=$$
+
+$$= \frac{-\mathbb E(Y\mathbf 1_{Y\leq q_{\tau_1}})+q_{\tau_1}\tau_1}{\mathbb EY - 2\mathbb E(Y\mathbf 1_{Y\leq q_{\tau_1}})-q_{\tau_1}(1-2\tau_1)}.$$
+
+Rewriting $\mathbb E(Y\mathbf 1_{Y\leq q}) = G(q)$, we obtain
+
+$$\tau_2 (\tau_1) = \frac{-q_{\tau_1}\tau_1 + G(q_{\tau_1})}{-\mathbb EY + 2G(q_{\tau_1})+q_{\tau_1}(1-2\tau_1)}.$$
+```
+
+
+Using this correspondence between quantiles and expectiles, a comparison of the optimal plans for the two parameterizations of the utility function are straight forward.
+
+::: {.example #corrqe name="Correspondence between quantiles and expectiles"}
+Consider $T$ with the uniform mixture distribution as in \@ref(exm:qande). The correspondence function between the associated $\omega$-quantile and the $\tau$-expectile of $T$ $\tau(\omega):(0,1)\setminus\{`r paste0(round(p0,2))`\}\rightarrow(0,1)$ is
+$$\tau(\omega)=\begin{cases}
+\frac{-\omega q_\omega+ \frac 12 \frac p{a_2-a_1}(q_\omega^2-a_1^2)}{-\frac{p(a_1+a_2)}{2}-\frac{(1-p)(a_3+a_4)}{2} +\frac p{a_2-a_1}(q_\omega^2-a_1^2) + (1-2\omega)q_\omega},&q_\omega= a_1 + \frac{a_2-a_1} p\omega, \omega <p\\
+\frac{-\omega q_\omega(T) + \frac 12 p(a_1+a_2) + \frac 12 \frac {1-p}{a_4-a_3}(q_\omega^2-a_3^2)}{-\frac{(1-p)(a_3+a_4)}{2} + \frac{p(a_1+a_2)}2 + \frac {1-p}{a_4-a_3}(q^2-a_3^2) + (1-2\omega)q_\omega},&q_\omega = a_3 + \frac{a_4-a_3}{1-p}(\omega-p), p<\omega
+\end{cases}$$
+
+and is shown in the Figure \@ref(fig:figcor).
+
+:::
+
+```{r}
+
+a1<-10
+b1<-20
+
+a2<-30
+b2<-110
+
+p0<-0.9
+
+
+n=10000
+u<-runif(n)
+t1<-runif(n,a1,b1)
+t1[u>p0]<-runif(sum(u>=p0),a2,b2)
+t<-t1
+tauts<-c(seq(0.01,0.99,0.01),0.995)
+expectiles<-expectreg::expectile(t,tauts)
+alphas<-sapply(expectiles,function(x,q){sum(x<q)/length(x)},x=t)
+ind<-c(as.numeric(names(alphas))<=0.47|as.numeric(names(alphas))>0.8)
+#linear interpolation
+taus<-c(0.01,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.95,0.99)
+tau_new = approx(tauts[ind], alphas[ind], xout=taus)
+
+
+
+tau_omega<-function(w,a1,a2,a3,a4,p){
+  et<-0.5*p*(a1+a2) + 0.5*(1-p)*(a3+a4)
+  if(w<p){
+    qw<-a1+(a2-a1)/p*w
+    gq<-0.5*p/(a2-a1)*(qw^2-a1^2)
+    tw<-(-w*qw + gq) / (-et+2*gq+(1-2*w)*qw )
+  } else if (w>p){
+    qw<-a3+(a4-a3)/(1-p)*(w-p)
+    gq<-0.5*p*(a1+a2)+0.5*(1-p)/(a4-a3)*(qw^2-a3^2)
+    tw<-(-w*qw + gq) / (-et+2*gq+(1-2*w)*qw )
+  } else{
+    tw<-NA
+  }
+  return(tw)  
+}
+w<-seq(0,1,0.001)
+tw<-sapply(w, tau_omega, a1=a1,a2=b1,a3=a2,a4=b2,p=p0)
+#cbind(tauts,alphas)
+alphas[!ind]<-NA; tauts[!ind]<-NA
+alphas[as.numeric(names(alphas))==0.47]<-0.89999
+```
+
+
+```{r figcor, fig.cap="Quantile- expectile correspondence function for mixture of two uniform distributions."}
+plot(alphas,tauts,type="l",ylab=bquote(tau(omega)), xlab=bquote(omega),axes=F,col=NA)
+for(i in c(1:6,12:13)){
+  arrows(0,tau_new$x[i],tau_new$y[i],tau_new$x[i],lty=2, col=4,code=0)
+  arrows(tau_new$y[i],0,tau_new$y[i],tau_new$x[i],lty=2, col=2,code=0)
+}
+#
+par(xpd=T)
+arrows(p0,-0.05,p0,1,col="gray44",code=0,lty=2)
+#
+text(p0,-0.05,bquote(p==0.9),col="gray44",pos=1)
+#
+#points(w, tw)
+indna<-which(is.na(tw))
+lines(w[1:min(indna)],tw[1:min(indna)])
+lines(w[max(indna):length(w)],tw[max(indna):length(w)])
+axis(1,at=c(0,0.25,0.5,0.75,1))
+axis(2,at=c(0,0.25,0.5,0.75,1))
+```
+
+
+The sample counterparts, $\hat q_\tau(X)$ and $\hat e_\tau(X)$, of the population $\tau$-quantile and $\tau$-expectile are computed as plug-in estimators based on the empirical distribution function:
+
+\begin{align}
+\hat q_\tau(X) = \arg\min_{q\in\mathbb R}\sum_{i=1}^n||x_i-q||^1_{1,\tau}, (\#eq:q)
+\end{align}
+and
+
+\begin{align}
+\hat e_\tau(X) = \arg\min_{e\in\mathbb R}\sum_{i=1}^n||x_i-e||^2_{2,\tau}. (\#eq:e)
+\end{align}
+
+In this formulation, both are asymmetric versions of M-estimators, M-quantiles, and with the corresponding properties as consistency and under some more restrictive assumptions as finite second moment and continuous $F$, asymptotic normality (@holzmann2016, @abdous1995, @breckling1988). Moreover, as @abdous1995, sample expectile estimators are more efficient than sample quantiles.
+
+An estimate for the correspondence function can be obtained following the procedure of @taylor2008, who construct an empirical cumulative distribution function by counting the observations below the estimated expectile for each of the $\tau$-levels, such that for each $\tau$ there is a corresponding estimate of quantile index $\omega$. One can then interpolate linearly between the resulting points to obtain $\hat\tau(\omega)$.
+
+::: {.example #qande name="Sample quantiles and expectiles"}
+
+Consider a (ordered) sample of the ten travel times:
+
+```{r}
+set.seed(123)
+n=10
+
+u<-runif(n)
+t0<-runif(n,a1,b1)
+t0[u>p0]<-runif(sum(u>=p0),a2,b2)
+
+tt<-c(0.1,0.25,0.5,0.75,0.9)
+t<-t0
+
+quantiles<-round(quantile(t,tt),4)
+expectiles<-round(expectreg::expectile(t,tt),4)
+
+```
+
+```{r}
+get_opt_departure<-function(t,tau, type=1){
+  if(type==2){
+    departure_time<-expectreg::expectile(t,tau)
+  } else {
+    departure_time<-quantile(t,tau)
+  }
+  names(departure_time)<-ifelse(type==1, "quantile","expectile")
+  return(departure_time)
+}
+
+ratios<-c(1,2,3,4,9,20,50,100) #beta/gamma
+beta<-1
+
+gammas<-ratios/beta
+taus<-gammas/(gammas+beta)
+departure_times<-cbind(sapply(taus,get_opt_departure,t=t,type=1),sapply(taus,get_opt_departure,t=t,type=2))
+
+```
+
+
+\[`r paste0(round(sort(t),2),collapse=", ")`\]
+
+generated from a mixture of two uniform distributions with mixing parameter $p=`r paste0(round(p0,2))`$ as well as $a_1=`r paste0(round(a1,2))`$, $b_1=`r paste0(round(b1,2))`$, $a_2=`r paste0(round(a2,2))`$, and $b_2=`r paste0(round(b2,2))`$. 
+
+For $\tau \in\{`r paste0(round(tt,2),collapse=", ")`\}$
+
+- the sample quantiles are: 
+\[\hat q_{`r tt[1]`}=`r quantiles[1]`, \hat q_{`r tt[2]`}=`r quantiles[2]`,\hat q_{`r tt[3]`}=`r quantiles[3]`,\hat q_{`r tt[4]`}=`r quantiles[4]`,\hat q_{`r tt[5]`}=`r quantiles[5]`\]
+
+- the sample expectiles are: 
+\[\hat e_{`r tt[1]`}=`r expectiles[1]`, \hat e_{`r tt[2]`}=`r expectiles[2]`,\hat e_{`r tt[3]`}=`r expectiles[3]`,\hat e_{`r tt[4]`}=`r expectiles[4]`,\hat e_{`r tt[5]`}=`r expectiles[5]`\]
+
+:::
+
+<!--
+Usually the expected utility is maximized with respect to **conditional distribution** of travel times given other observable factors, the distribution depends on. 
+
+The notion of sample quantiles and expectiles in \@ref(eq:q) and \@ref(eq:e) are readily extended to their regression versions for a response $Y$  given a set of $p$ linear covariates $\{x_{i,j}\}_{j=1}^p$. The conditional quantile regression of @koenker1978 aims at finding the conditional quantile (given the covariates $x_{i,p}$):
+
+\[q_{\tau,X}(Y)\equiv q_\tau(Y|x_{i}) = x_{i,j}^\top b_{\tau,1}, i=1,\ldots, n, j=1,\ldots p,\]
+
+and the conditional expectile regression of @newey1987 aims at finding the conditional expectile:
+
+\[e_{\tau,X}(Y)\equiv e_\tau(Y|x_{i}) = x_{i,j}^\top b_{\tau,2}, i=1,\ldots, n, j=1,\ldots p.\]
+
+Both resulting estimators can be expressed as:
+
+\begin{align}
+\hat b_{\tau,a}(y,X) = \arg\min_{b\in\mathbb R^p} \sum_{i=1}^n||y_i-\sum_{i=1}^px_ib||^a_{a,\tau}
+\end{align}.
+
+Whereas in the quantile case $\hat b_{\tau,1}$ is computed via linear programming as @koenker1978. In the case of expectiles $\hat b_{\tau,2}$ has the form:
+\[\hat b_{\tau,2}(y,X)  = \Big(\sum_{i=1}^n\sum_{j=1}^p\hat w_{i,j} (\tau)x_{i,j}x_{i,j}^\top\Big)^{-1}\Big(\sum_{i=1}^n\sum_{j=1}^p\hat w_{i,j} (\tau)x_{i,j}y_{i}\Big)\]
+
+with $\hat w_{i,t}(\tau) = |\tau - \mathbf 1(y_{i}\leq x_{i,j}\hat b(\tau))|$ and can be computed by iterated weighted least squares as @newey1987.
+
+Note that scale equivariance holds for $\hat b_{\tau,a}(y,X), a\in\{1,2\}$:
+
+\[\hat b_{\tau,a}(\lambda y,X)= \lambda \hat b_{\tau,a}(y,X), \text{ for }\lambda\in[0,+\infty),\]
+
+derived from the scale equivariance for quantiles and expectiles in Proposition \@ref(prp:propprops).
+
+This property is of practical relevance for modelling conditional distribution of travel times via quantile or expectile regression, as the scale of travel time (Seconds, Minutes, or Hours) should not change the underlying parameterization beyond its scaling.
+-->
+
+## Quantiles and expectiles of travel time distribution as maximizers of $U_1(d,T)$ and $U_2(d,T)$
+
+Now, we come back to our planer's utility function in the asymmetric linear and quadratic versions. The following proposition connects the optimal departure times to quantiles and expectiles of travel time distribution.
+
+::: {#proputil .proposition name="Optimal departure time plans"}
+Let $U_a(d,T), a\in\{1,2\}$ be planers utility function with $\beta_a>0$ and $\gamma_a>0$ fixed. Let  $T$ be random travel time with distribution function $F$. Then, optimal departure time $d^*$ corresponds to:
+
+- the $\tau_1$-quantile $q_{\tau_1}(T)$ of $F$ in case of $U_1(d,T)$
+
+- the $\tau_2$-expectile $e_{\tau_2}(T)$ of $F$ in case of $U_2(d,T)$
+
+with $\tau_a=\frac{\gamma_a}{\gamma_a+\beta_a}$ and $a\in\{1,2\}$. Alternatively, we can express the ratio $\frac{\gamma_a}{\beta_a}$ in terms of $\tau_a$ as $\frac{\gamma_a}{\beta_a} = \frac{\tau_a}{1-\tau_a}.$
+:::
+
+```{proof}
+
+Rewrite $\mathbb EU_a(d,T)$ as
+\[\mathbb EU_a(d,T) = -\left[\alpha_a \mathbb E(T^a) + (\gamma_a+\beta_a)\mathbb E\left\{\frac{\beta_a}{\gamma_a+\beta_a}(d-T)^a\mathbf 1_{T<d}+ \frac{\gamma_a}{\gamma_a+\beta_a}(T-d)^a\mathbf 1_{T\geq d}\right\}\right]\]
+
+Setting $\tau_a=\frac{\gamma_a}{\gamma_a+\beta_a}$ we get
+
+\begin{align}
+\mathbb EU_a(d,T) &= -\left[\alpha_a \mathbb E(T^a) + (\gamma_a+\beta_a)\mathbb E\left\{(1-\tau_a)(d-T)^a\mathbf 1_{T<d}+ \tau_a(T-d)^a\mathbf 1_{T\geq d}\right\}\right]\nonumber\\
+&= -\left(\alpha_a \mathbb E(T^a) + (\gamma_a+\beta_a)\mathbb E\left[|T-d|^a\{(1-\tau_a)\mathbf 1_{T<d}+ \tau_a\mathbf 1_{T\geq d}\right\}\right)\nonumber\\
+&= -\alpha_a \mathbb E(T^a) - (\gamma_a+\beta_a)\mathbb E||T-d||_{a,\tau_a}^a, (\#eq:as)
+\end{align}
+where, again, $\tau_a = \frac{\gamma_a}{\beta_a+\gamma_a}$. That is, maximizing $\mathbb EU_a(d,T)$ over $d\in\mathbb R$ is equivalent to minimizing $\mathbb E||T-d||_{a,\tau_a}^a$ which gives $q_{\tau_1}(T)$ in case $a=1$ and $e_{\tau_2}(T)$ in case $a=2$.
+
+
+```
+
+Giving the optimal choice ($d_1^*= q_{\tau_1}(T)$ or $d_2^*= e_{\tau_2}(T)$) the second term in \@ref(eq:as) corresponds to the asymmetric generalization of the absolute deviation ($a=1$) or of the variance ($a=2$) of random travel times. As a result, we get the $\tau$-deviation and the $\tau$-variance of $T$, ($Dev_\tau(T)$ and $Var_\tau(T)$), defined in @tran2019 as
+
+\begin{equation}
+Dev_\tau(T) = \mathbb E ||T-q_{\tau_1}(T)||_{1,\tau_1} (\#eq:tdev)
+\end{equation}
+
+and 
+\begin{equation}
+Var_\tau(T) = \mathbb E ||T-e_{\tau_2}(T)||^2_{2,\tau_2}. (\#eq:tvar)
+\end{equation}
+
+Moreover, using the location scale invariance of quantiles in Proposition \@ref(prp:propprops) in case of $a=1$, we get the well known result of @fosgerau2010, where the optimal departure time $d_1^* = \mu + \sigma F^{-1}\left(\frac{\gamma_1}{\beta_1+\gamma_1}\right)$ with $F$ being the cumulative distribution function of the standardized travel time.
+
+The result for $a=2$ is new. Proposition \@ref(prp:proputil) generalizes therefore the result of @fosgerau2010 to $a\in\{1,2\}$ and provides a unified understanding of how the considered type of utility function is linked to the distributional properties of travel time $T$. 
+
+As mentioned previously, there exist the correspondence function between quantiles and expectiles of a given distribution, which maps each well defined quantile $q_{\alpha}(T)$ to an expectile $e_{\tau(\alpha)}(T)$. Therefore, maximization of the expected utility in \@ref(eq:eu2) can produce the same choices for suitably chosen preference parameter $\gamma/\beta$, see proposition \@ref(prp:proputil2) below. Moreover, the asymmetric quadratic preference class is much richer than the asymmetric linear one as it delivers well defined solutions for every combination of scheduling preference parameters not only for distributions of $T$ with strictly increasing $F$ but also for discrete distributions or distribution with discontinuous support (see examples \@ref(exm:ddqande) and \@ref(exm:duqande)).
+
+::: {#proputil2 .proposition name="Correspondence between $U_1$- and $U_2$-based choices"}
+Let $U_1(d,T)$ be planers utility function with known $\gamma_1>\beta_1>0$. Let  $T$ be random travel time with distribution function $F$ and finite mean. Then, for each $\tau_1 = \frac{\gamma_1}{\beta_1+\gamma_1}$, in which $F$ is invertible, there exist $\tau_2$ and $\gamma_2>\beta_2>0$ such that maximizing $\mathbb E U_1(d,T)$ with respect to $d$ is equivalent to maximizing $\mathbb E U_2(d,T)$ with respect to $d$ and thus both utilities represent the same scheduling preferences as they produce the same choices in the expected utility sense.
+
+:::
+
+```{proof}
+
+From \@ref(prp:proputil) the optimal departure plan $d_1^*$ for $U_1(d,T)$ sattisfies:
+
+\[d_1^* = \arg\min_{d\in \mathbb R^+}\mathbb E\left(||T-d||_{1,\tau_1}\right),\]
+
+which matches with the $\tau_1$-quantile of travel time $T$ with $\tau_1=\frac{\gamma_1}{\beta_1+\gamma_1}$. Wenn $F$ is invertible in $\tau_1$, there exist a map $\tau_2\equiv\tau_2(\tau_1)$ such that for the $\tau_2$-expectile, $e_{\tau_2}$, holds $e_{\tau_2} = q_{\tau_1}$. That is,
+
+\[d_1^* = \arg\min_{d\in \mathbb R^+}\mathbb E\left(||T-d||_{1,\tau_1}\right) = \arg\min_{d\in \mathbb R^+}\mathbb E\left(||T-d||_{2,\tau_2}^2\right) = d_2^*.\]
+
+The parameter $\gamma_2>\beta_2>0$ are related as:
+
+\begin{equation}\frac{\gamma_2}{\beta_2+\gamma_2} = \tau_2(\tau_1) = \tau_2\left(\frac{\gamma_1}{\beta_1+\gamma_1}\right), (\#eq:tcor)
+\end{equation}
+
+or \(\frac{\gamma_2}{\beta_2} = \frac{\tau_2}{1-\tau_2},\) where $\tau_2\equiv \tau_2\left(\frac{\gamma_1}{\beta_1+\gamma_1}\right)$ is the quantile-expectile correspondence relation.
+
+```
+
+
+::: {.example #optd name="Optimal departure times for the sample of 10 travel times"}
+cont. of Example \@ref(exm: qande). Comming back to our example with a sample of 10 travel times, we can now compute the optimal departure time points in the following example (see Table \@ref(tab:table1)). We observe, that for smaller $\gamma/\beta$-ratios $d_1^*$ is smaller than $d_2^*$ and vice versa for larger $\gamma/\beta$-ratios.
+
+```{r table1}
+library(knitr)
+options(scipen=999)
+tab<-t(departure_times)
+rownames(tab)<-c("$d^*$ for $U_1(d,t)$","$d^*$ for $U_2(d,t)$")
+colnames(tab)<-c("$\\frac{\\beta}{\\gamma}=1$","$\\frac{\\beta}{\\gamma}=2$","$\\frac{\\beta}{\\gamma}=3$","$\\frac{\\beta}{\\gamma}=4$", "\\frac{\\beta}{\\gamma}=9", "\\frac{\\beta}{\\gamma}=20", "\\frac{\\beta}{\\gamma}=50","\\frac{\\beta}{\\gamma}=100")
+caption<-paste0("Optimal $d^*$ for $U_1(d,T)$ and $U_2(d,T)$ based on the sample of the ten travel times: ",paste0(sort(round(t0,2)),collapse=", "),".")
+
+ knitr::kable(tab, align = "llll",
+               col.names = colnames(tab),
+               row.names = TRUE,
+               digits = 2,
+               caption = caption
+  )
+```
+
+
+```{r}
+set.seed(12345)
+t2<-runif(1,a2,b2)
+t<-c(t0,t2)
+taus<-gammas/(gammas+beta)
+departure_times2<-cbind(sapply(taus,get_opt_departure,t=t,type=1),sapply(taus,get_opt_departure,t=t,type=2))
+```
+
+If we add another extreme travel time observation `r paste0(round(t2,2))` to our sample, all expectiles alias $d^*_2$ change substantially, whereas noticeable changes apply only to the higher quantiles (see Table \@ref(tab:table3)). Though experiencing one more extreme travel time is likely to change the optimal departure plan for all types of planers.
+
+```{r table3}
+library(knitr)
+options(scipen=999)
+tab<-t(departure_times2)
+rownames(tab)<-c("$d^*$ for $U_1(d,t)$","$d^*$ for $U_2(d,t)$")
+colnames(tab)<-c("$\\frac{\\beta}{\\gamma}=1$","$\\frac{\\beta}{\\gamma}=2$","$\\frac{\\beta}{\\gamma}=3$","$\\frac{\\beta}{\\gamma}=4$", "\\frac{\\beta}{\\gamma}=9", "\\frac{\\beta}{\\gamma}=20", "\\frac{\\beta}{\\gamma}=50","\\frac{\\beta}{\\gamma}=100")
+caption<-paste0("Optimal $d^*$ for $U_1(d,T)$ and $U_2(d,T)$ based on the sample of the ten travel times: ",paste0(sort(round(c(t0,t2),2)),collapse=", "),".")
+
+ knitr::kable(tab, align = "llll",
+               col.names = colnames(tab),
+               row.names = TRUE,
+               digits = 2,
+               caption = caption
+  )
+```
+
+:::
+
+In summary, the considered scheduling utility functions share the property, that maximizers of the resulting expected utilities are the tail indices (the $\tau$-quantile or the $\tau$-expectile) of random travel time, where the index $\tau$ depends on the preference parameters ($\tau=\gamma/(\beta+\gamma)$). Moreover, via the quantile-expectile correspondence, a maximizer of $\mathbb EU_2(d,t)$ is also a maximizer of $\mathbb EU_1(d,t)$ for some corresponding preference transformation $\tilde\gamma/\tilde \beta$ obtained by inversion of \@ref(eq:tcor) in case that the relevant $\tau_1$-quantile is unique. Hence, the choices induced by maximizing \@ref(eq:eu1) are a subset of the choices induced by \@ref(eq:eu2), and the later enables a richer preference representation.
+
+
+
+## Quantifying travel time reliability under asymmetric scheduling preferences
+
+<!--@zang2022 gives a comprehensive overview of reliability measures for travel time.  
+@zang2022 gives a comprehensive overview of reliability measures for travel time. Here we focus on one quantile and one utility-based variability measures. The first one relies on tail quantiles of travel time distribution, to which we propose an alternative expectile-based version. The second one, travel reliability ratio, is linked to utility changes, where we derive the expressions for both considered utility specifications.
+
+Considering th quantile-based version, @zheng2010 measure travel time variability or delay uncertainty as the difference between the quantiles of travel time divided by the median:
+\begin{equation}
+\Delta_1=\frac{q_{\tau}(T) - q_{1-\tau}(T)}{q_{0.5}(T)} (\#eq:delt1)
+\end{equation}
+for $0.5<\tau<1$. The authors use $\tau=0.9$.
+
+Analogously, we can define an expectile based measure as
+
+\begin{align}
+\Delta_2&=\frac{e_{\tau}(T) - e_{1-\tau}(T)}{e_{0.5}(T)}. (\#eq:delt2)
+\end{align}
+
+Whereas \@ref(eq:delt1) is problematic in situation where the respective quantiles are not well defined, an expectile based measure in \@ref(eq:delt2) is feasible for all distributions with finite mean. 
+
+A natural choice of $\tau$ is the relevant preferences specification, i.e. $\tau = \frac{\gamma}{\beta+\gamma}$. The sample versions of $\Delta_1$ and $\Delta_2$ can be obtained using sample quantiles and expectiles in \@ref(eq:q) and \@ref(eq:e).
+-->
+
+We employ travel time reliability ratio (TTRR), denoted here as $\rho_a$, for quantifiying travel time reliability. This ratio relates the value of travel time variability and to the value of travel time and is a commonly used measure in the literature (see @zang2022 and the references therein). Formally:
+
+\begin{align}
+\rho_a = \frac{d\mathbb EU_a^*}{d\sigma_T}/\frac{d\mathbb EU_a^*}{d\mu_T}, (\#eq:rho)
+\end{align}
+
+where $\mu_T$ and $\sigma_T$ refer to the mean and the standard deviation of $T$.
+
+Based on the results of @fosgerau2010 where
+
+\begin{align}
+\rho_1 = \frac{d\mathbb EU_1^*}{d\sigma_T}/\frac{d\mathbb EU_1^*}{d\mu_T} = \frac{\beta+\gamma}{\alpha}\int_{\frac{\gamma}{\beta+\gamma}}^1 F^{-1}(p)dp,
+(\#eq:rho11)
+\end{align}
+
+@li2019 propose a procedure to compute \@ref(eq:rho11) based on the conditional value at risk. Here we derive the expressions for $\rho_a$ based on our notion of $\mathbb EU_a(d,T)$ and propose an estimation procedure based on empirical partial moments.
+
+::: {#proprho .proposition name="Travel time reliability ratio"}
+Let $U_a(d,T), a\in\{1,2\}$ be planers utility function with $\beta>0$ and $\gamma>0$ known. Let  $T$ be random travel time with distribution function $F$ with finite mean $\mu_T$ and finite variance $\sigma_T^2$. Then, the travel time reliabilty ratio $\rho_a$ is determined as:
+
+\[\rho_a = \frac{a(\gamma+\beta)}{\alpha}\sigma_T^{a-1}\mathbb E||T_S-h_{a,\tau_a}(T_S)||_{a,\tau}^a,\]
+
+with $h_{a,\tau} = \begin{cases} q_\tau(T),&\text{for } a=1,\\ e_\tau(T),&\text{for }a=2.\end{cases}$ and $\tau = \frac{\gamma}{\beta+\gamma}$.
+:::
+
+```{proof}
+Since $\mathbb E(T^2) = \sigma_T^2 + \mu_T^2$, we can rerwrite $\mathbb E(T^a) = \mu_T^{a} + (\sigma_T^2)^{a-1}$ and
+$$\mathbb E U_a^*(d,T) =-\alpha (\mu_T^{a} + (\sigma_T^2)^{a-1}) - (\gamma+\beta)\mathbb E||T-h_{a,\tau}(T)||_{a,\tau}^a\\
+=-\alpha (\mu_T^{a} + (\sigma_T^2)^{a-1})- (\gamma+\beta)\sigma_T^a\mathbb E||T_S-h_{a,\tau}(T_S)||_{a,\tau}^a$$
+
+The last line based on the scale variance of expectiles and
+$$\mathbb E||T-h_{a,\tau}(T)||_{a,\tau}^a=\mathbb E||(\sigma_TT_S + \mu_T)-(\sigma_Th_{a,\tau}(T_S)+\mu_T)||_{a,\tau}^a \\
+= \mathbb E||\sigma_T(T_S-h_{a,\tau}(T_S))||_{a,\tau}^a = \sigma_T^a\mathbb E||T_S-h_{a,\tau^*}(T_S)||_{a,\tau}^a,$$
+
+where $T_S$ denotes the standardized version of $T$. The value of travel time is:
+$$\frac{d\mathbb EU_a^*}{d\mu_T} = -a\alpha \mu_T^{a-1} $$
+The value of travel time variability is:
+$$\frac{d\mathbb EU_a^*}{d\sigma_T} = -a(\gamma+\beta)\sigma_T^{a-1}\mathbb E||T_S-h_{a,\tau}(T_S)||_{a,\tau}^a$$
+Thus,
+$$\rho_a=\frac{a(\gamma+\beta)}{\alpha}\sigma_T^{a-1}\mathbb E||T_S-h_{a,\tau}(T_S)||_{a,\tau}^a$$.
+```
+
+Note that for $a=1$ we recover:
+\begin{equation}\rho_1 = \frac{(\gamma+\beta)}{\alpha}\mathbb E||T_S-q_{\tau_1}(T_S)||_{1,\tau_1}. (\#eq:rho1)
+\end{equation}
+
+In case $a=2$ TTRR becomes:
+\begin{equation}\rho_2=\frac{2(\gamma+\beta)}{\alpha}\sigma_T\mathbb E||T_S-e_{\tau_2}(T_S)||_{2,\tau_2}^2, (\#eq:rho2)
+\end{equation}
+
+and thus, explicitly depends on standard deviation of $T$. 
+
+The terms $\mathbb E||T_S-q_{\tau_1}(T_S)||_{1,\tau_1}$ and $\mathbb E||T_S-e_{\tau_2}(T_S)||_{2,\tau_2}^2$ represent respectively the $\tau$-deviation $Dev_\tau(T)$ defined in \@ref(eq:tdev) and the $\tau$-variance $Var_\tau(T)$ defined in \@ref(eq:tvar). Both can be obtained in practice using their empirical counterparts:
+
+$$\widehat{Dev_\tau} (T) = \frac 1n\sum_{i=1}^n |\tau^*- \mathbf 1_{t_{S,i}\leq q_{\tau^*}}|\cdot|t_{S,i}-\hat q_{\tau^*}|$$
+and 
+
+$$\widehat{Var_\tau} (T) = \frac 1n\sum_{i=1}^n |\tau^*- \mathbf 1_{t_{S,i}\leq q_{\tau^*}}|\cdot |t_{S,i}-\hat q_{\tau^*}|^2$$
+which are both readily calculated from sampled of travel times. <!--@taylor2017 points out the importance of precise measurement of the right tail variation in order for such measure of variability to be useful for travelers in updating their behavior.-->
+
+Whereas \@ref(eq:rho1) is problematic in situations where the respective quantiles are not well defined, an expectile based measure in \@ref(eq:rho2) is feasible for all distributions with finite mean and variance. 
+
+# Comparing optimal departure time choices under $U_1(T,d)$ and $U_2(T,d)$ for Montreal travel time data
+
+We provide a real data example using the dataset of travel times for Montreal.\footnote{ Available at
+https://donnees.montreal.ca/dataset/temps-de-parcours-sur-des-segments-routiers-historique, accessed on 01 Jul 2023.} We take a subset of the data measures on link with ID 174in February 2019 6:00 and 7:00 am on regular working days Monday through Thursday. As suggested by kernel density estimate on Figure \@ref(fig:figden), the data semm to be generated by a model with several regimes. We, therefore model the data with a three component mixture of four-parameter beta distributions.
+
+```{r}
+# dataf<-read.csv("Data/trips2019.csv")
+# dataf<-transform(dataf, wd=format(as.Date(TripStart_dt), "%a"), hour = substr(TripStart_dt,12,13))
+# dataf<-transform(dataf,month=format(as.Date(TripStart_dt), "%b"))
+# 
+# links<-unique(dataf$LinkId)
+# 
+# save(dataf, file="dataf.RData")
+```
+
+```{r}
+# #13#5#2#1   174 166 129 81 54 36 32 15 16 23 25 70 157   215   237
+# #ind<-dataf$LinkId==links[i]&dataf$wd=="Di"&dataf$hour=="12"
+# 
+# 
+# load("dataf.RData")
+# i=174  #174 36  32 23 157
+# ind<-dataf$LinkId==links[i]&dataf$wd%in%c("Mo","Di","Mi", "Do")&dataf$hour%in%c("06","07")&dataf$month%in%c("Feb")
+# par(mfrow=c(1,2))
+# hist(dataf$Speed_kmh[ind])
+# a<-hist(dataf$TravelTime_s[ind])
+# a
+# 
+# datafs<-dataf[ind,]
+# save(datafs,file="datafs.RData")
+# #model with mixture of beta dist https://rpubs.com/MatthewPalmeri/646676
+```
+
+```{r}
+load("datafs.RData")
+```
+
+```{r figden, fig.cap="Kernel density estimate for the considered travel times using authomatically chosen bandwidth 0.109."}
+den<-density(datafs$TravelTime_s/60)
+plot(den,ylim=c(-0.01,1),axes=F, xlim=c(0,25), main="", xlab="travel time",ylab="density estimate")
+points(datafs$TravelTime_s/60, rep(-0.01,length(datafs$TravelTime_s/60)),pch="|",col=scales::alpha("gray44",0.5))
+axis(1)
+axis(2, at=c(0,0.5,1))
+```
+
+<!--## Estimating the parameter for travel time distribution-->
+Following the hybrid algorithm of @schroeder2016, who derives an iterative algorithm based on method of moments estimator, we estimate the parameters of the three component mixture distribution with bets components. The resulting estimates are presented in Table \@ref(tab:tabpars). Note, that the estimated mixture shows a gap in support and we expect, therefore, that the optimal departure time choice based on the estimated model will be non-unique in case of $U_1$ with a certain preference combination $\tau = \frac{\gamma}{\beta+\gamma}$.
+
+```{r}
+#https://en.wikipedia.org/wiki/Beta_distribution#cite_note-JKB-1
+mom_est<-function(x){#moment estimator four par beta
+  n<-length(x)
+  sm<-mean(x); sv<-sd(x)^2; ssk<-n/((n-1)*(n-2))*sum((x-sm)^3)/sv^(3/2)
+  sek<-(n*(n+1)) / ((n-1)*(n-2)*(n-3)) * sum((x-sm)^4)/sv^(2) - (3*(n-1)^2) / ((n-2)*(n-3))
+  
+  nu<-3*(sek - ssk^2 + 2) / (3/2*ssk^2-sek) #nu=al+be
+   
+  cond1<-(ssk^2-2)<sek&sek<(3/2*ssk^2)
+  cond2<-ssk==0
+  cond3<-ssk!=0
+  
+  if(cond1&cond2){
+   al<-be<-nu/2
+  } else if(cond1&cond3){
+    term<-sqrt(1+ (16*(nu+1)) / ((nu+2)^2*ssk^2))
+    sol<-c(nu/2*(1+ 1/term), nu/2*(1- 1/term))
+    al<-ifelse(ssk<0,max(sol),min(sol))
+    be<-ifelse(ssk<0,min(sol),max(sol))
+  }else{al<-be<-NA}
+  sr<-sqrt(sv)*sqrt(6+5*nu+1/6*(2+nu)*(3+nu)*sek)
+  a<-sm - al/nu*sr
+  b<-sr + a
+  return(c(al,be,a,b))
+}
+
+
+
+```
+
+
+```{r}
+as<-c(0,2,10); bs<-c(2,10,30)
+tt<-datafs$TravelTime_s/60
+x1<-tt[tt<=bs[1]]; x2<-tt[tt>as[2]&tt<=bs[2]]; x3<-tt[tt>as[3]&tt<=bs[3]]; x4<-tt[tt>as[4]&tt<=bs[4]]; 
+mixture_params<-c(length(x1)/length(tt), length(x2)/length(tt),length(x3)/length(tt))
+params<-c(mom_est(x1), mom_est(x2), mom_est(x3))
+
+if(params[3]>min(tt)){
+  params[3]<-min(tt)-0.1
+}
+conv<-F
+params_old<-params
+i=0
+maxiter<-100
+while(!conv){
+  i=i+1
+  first_dist = mixture_params[1]*ExtDist::dBeta_ab(tt, params[1], params[2], params[3], params[4])
+  second_dist = mixture_params[2]*ExtDist::dBeta_ab(tt, params[5], params[6], params[7], params[8])
+  third_dist = mixture_params[3]*ExtDist::dBeta_ab(tt, params[9], params[10], params[11], params[12])
+  responsibility_denom = first_dist + second_dist + third_dist
+  first_responsibility = first_dist / responsibility_denom
+  second_responsibility = second_dist / responsibility_denom
+  third_responsibility = third_dist / responsibility_denom
+  mixture_param1 = sum(first_responsibility)/length(tt)
+  mixture_param2 = sum(second_responsibility)/length(tt)
+  mixture_param3 = sum(third_responsibility)/length(tt)
+  mixture_params = c(mixture_param1, mixture_param2, mixture_param3)
+  
+  x1<-tt[first_responsibility>0.5]; x2<-tt[second_responsibility>0.5]; x3<-tt[third_responsibility>0.5]
+  params<-c(mom_est(x1), mom_est(x2), mom_est(x3))
+  if(params[3]>min(tt)){
+    params[3]<-min(tt)-0.1
+  }
+  if(sum(abs(params_old-params))<10^(-15)|i>maxiter){conv<-T}
+  params_old<-params
+}
+
+#params
+#mixture_params
+```
+
+```{r}
+xx<-seq(min(tt),max(tt)+0.1,0.001)
+yy<-c(mixture_params[1]*ExtDist::pBeta_ab(xx, params[1], params[2], params[3], params[4]) + 
+        mixture_params[2]*ExtDist::pBeta_ab(xx, params[5], params[6], params[7], params[8]) +
+       mixture_params[3]*ExtDist::pBeta_ab(xx, params[9], params[10], params[11], params[12])
+)
+yy[yy==0]<-NA
+# plot(xx,yy,type="p",col=3, ylim=c(0,0.9),cex=0.4)
+# points(tt,rep(0,length(tt)),pch="|",col="gray44")
+# 
+# plot(xx,yy,cex=0.4,ylim=c(0.99,1))
+```
+<!--## Comparing optimal departure time choices for $U_1(T,d)$ and $U_2(T,d)$ -->
+
+```{r}
+# mom_est_2<-function(x){
+#   n<-length(x)
+#   m1<-mean(x); m2<-mean(x^2)
+#   lam<-1/m1
+#   sig<-ifelse((m2-1/lam - 1/(lam^2))>0,sqrt(m2-1/lam - 1/(lam^2)),10^(-3))
+#   return(c(sig,lam))
+# }
+# 
+# mom_est_3<-function(x){
+#   n<-length(x)
+#   sm<-mean(x); sv<-sd(x)^2; ssk<-n/((n-1)*(n-2))*sum((x-sm)^3)/sv^(3/2)
+#   al<-(2/ssk)^2
+#   beta<-al/sm
+#   sig<-ifelse(sv-al/(beta^2)>0,sqrt(sv-al/(beta^2)),10^(-2))
+#   #beta<-sm/sv
+#   #al<-sm*beta
+#   return(c(sig,al,beta))
+# }
+```
+
+```{r}
+# #mixture of point mass, exponential and normal measurement error
+# tt<-datafs$TravelTime_s/60
+# 
+# set.seed(123)
+# ind<-runif(length(tt))>0.5
+# x1<-tt[ind]; x2<-tt[!ind]
+# 
+# params<-c(mean(x1),mom_est(x2))
+# mixture_params<-c(0.5,0.5)
+# 
+# 
+# conv<-F
+# params_old<-params
+# i=0
+# maxiter<-10
+# while(!conv){
+#   i=i+1
+#   print(i)
+#   #first comp
+#   #first_dist = mixture_params[1]*pnorm(tt, params[1], params[2])
+#   first_dist = mixture_params[1]*pnorm(tt, params[1], params[2])
+#   
+#   #second comp
+#   dens1<-function(x){return(dnorm(x,0,params[2]))}
+#   #dens2<-function(x,lam){return(dexp(x,params[3]))}
+#   dens2<-function(x,lam){return(dgamma(x,params[3],params[4]))}
+#   second_dist = mixture_params[2]*bayesmeta::convolve(dens1,dens2)$density(tt)
+#   #second_dist = mixture_params[2]*dgamma(tt,params[3],params[4])
+#   
+#   #responsibl
+#   responsibility_denom = first_dist + second_dist
+#   first_responsibility = first_dist / responsibility_denom
+#   second_responsibility = second_dist / responsibility_denom
+#   
+#   #mixture pars
+#   mixture_param1 = sum(first_responsibility)/length(tt)
+#   mixture_param2 = sum(second_responsibility)/length(tt)
+#   mixture_params = c(mixture_param1, mixture_param2)
+#   
+#   #reestimate dist pars
+#   x1<-tt[first_responsibility>0.5]; x2<-tt[second_responsibility>0.5];
+#   params<-c(mean(x1), mom_est_2(x2))
+#   
+#   if(sum(abs(params_old-params))<10^(-15)|i>maxiter){conv<-T}
+#   params_old<-params
+# }
+# 
+# #params
+# #mixture_params
+```
+
+```{r}
+ratios<-seq(1,200,0.1)
+taus<-1 / (1+1/ratios)
+taus<-c(seq(0.5,0.99,0.01),seq(0.9901,0.9999,0.0001),0.99999)
+ratios<-taus/(1-taus)
+#which(taus==0.999)
+```
+
+
+```{r}
+#simulate from the estimated mixture of gammas
+set.seed(123)
+N=10^5
+us<-runif(N)
+cmp<-cumsum(round(mixture_params,3))
+ys<-ExtDist::rBeta_ab(length(us), params[1], params[2], params[3], params[4])
+ys[us>cmp[1]]<-ExtDist::rBeta_ab(sum(us>cmp[1]), params[5], params[6], params[7], params[8]) 
+ys[us>cmp[2]]<-ExtDist::rBeta_ab(sum(us>cmp[2]), params[9], params[10], params[11], params[12])
+```
+
+
+```{r}
+exps<-sapply(taus,expectreg::expectile, x=ys)
+qs<-sapply(taus,quantile, x=ys)
+qs[taus==cmp[2]]<-NA
+```
+
+```{r tabpars}
+tbl<-round(rbind(params[1:4],params[5:8],params[9:12]),2)
+tbl<-cbind(mixture_params,tbl)
+rownames(tbl)<-c("component 1","component 2", "component 3")
+colnames(tbl)<-c("probability","shape 1","shape 2", "lower", "upper")
+
+caption<-paste0("The estimated parameters of the three component beta mixtures.")
+
+ knitr::kable(tbl, align = "llll",
+               col.names = colnames(tbl),
+               row.names = TRUE,
+               digits = 3,
+               caption = caption
+  )
+```
+
+Note, that there is a gap in the support of the estimated mixture between second and third component on the interval $(11,14.07)$. That is, for the $\tau$-value equal to the cumulative probability of the first two components, there will be no unique value. 
+
+```{r choices, fig.cap = "Left panel: the optimal choices as quantiles (when uniquely defined) for $U_1$ and expectiles for $U_2$ and different preference specification $\tau$. Right panel: the section on the support, where the quantile for $\tau=0.999$ is non-unique."}
+par(lwd=2,mfrow=c(1,2))
+
+plot(taus,qs,ylim=c(0,20),xlim=c(0.5,1),type="l",col=scales::alpha(2,0.8),axes=F,
+     xlab=bquote(tau), ylab=bquote(e[tau]~q[tau]))
+lines(taus,exps,col=scales::alpha(4,0.4))
+axis(1,cex.axis=0.8)
+axis(2,cex.axis=0.8)
+legend("topleft",col=c(2,4),lwd=c(2,2),legend=c(bquote(d[1]^"*"==q[tau]),bquote(d[2]^"*"==e[tau])),bty="n")
+
+plot(taus,qs,ylim=c(0,20),xlim=c(0.95,0.9999),type="l",col=2,axes=F,
+     xlab=bquote(tau), ylab=bquote(e[tau]~q[tau]))
+lines(taus,exps,col=4)
+axis(1,cex.axis=0.8)
+axis(2,cex.axis=0.8)
+legend("topleft",col=c(2,4),lwd=c(2,2),legend=c(bquote(d[1]^"*"==q[tau]),bquote(d[2]^"*"==e[tau])),bty="n")
+par(xpd=T)
+arrows(0.999,-1,0.999,qs[taus==0.9991]+0.1,lty=2,col="gray44",code=0,lwd=1)
+text(0.99,0,bquote(tau==0.999),col="gray44",cex=0.8)
+```
+
+
+Hence, for this real data example, the optimal departure plan for a planer with $U_1$ and preference parameters which yield $\tau=0.999$, no unique solution can be found as any value on the interval $(11,14.07)$ is admissible. Whereas, for a planer with $U_2$ the choice is unique, no matter which preference parameters she has.
+
+The corresponding optimal departure time choices for both utility types are plotted in Figure \@ref(fig:choices). On the left panel, we show the optimal choices as quantiles (when uniquely defined) for $U_1$ and expectiles for $U_2$ and different preference scpecification $\tau=\frac{\gamma}{\beta+\gamma}$. On the right plot of Figure \@ref(fig:choices), we "zoom in" to the interval near $\tau=0.999$.
+
+In this example, we have the following quantile-expectile correspondence $\tau_2(\tau_1)$ for $\tau_1\in(0.5,1)$ with a "hole" at $\tau_1=0.999$ which is show in Figure \@ref(fig:figcor2).
+
+```{r}
+#expectile and quantile ranges
+delt1<-(qs-quantile(ys,1-taus))/median(ys)
+delt2<-(exps-expectreg::expectile(ys,1-taus))/mean(ys)
+
+#ttrrs
+beta=1
+alpha=2*beta
+
+
+ttrrfun<-function(ys,tau,beta,gamma,alpha,type=1){
+  gamma = tau*beta/(1-tau)
+  yss<-(ys-mean(ys))/sd(ys)
+  qyss<-quantile(yss,tau)
+  eyss<-expectreg::expectile(yss,tau)
+  ttrr<-(gamma+beta)/alpha*(2*sd(ys))^(type-1)*(tau*mean((yss-qyss)[yss>qyss]^(type)) + (1-tau)*mean((qyss -yss)[yss<=qyss]^(type)))
+  return(ttrr)
+}
+ttrr1<-sapply(taus,ttrrfun,ys=ys,beta=beta,gamma=gamma,alpha=alpha,type=1)
+ttrr2<-sapply(taus,ttrrfun,ys=ys,beta=beta,gamma=gamma,alpha=alpha,type=2)
+#length(ttrr1)
+```
+
+Finally, the variability measures and the TTRRs as functions of $\tau$ are plotted in Figure .
+
+```{r figcor2, fig.cap = "Left panel: the estimated quantile-expectile correspondece for the considerred travel time data. Right panel: the derived TTRRs for both utility specifications and the considerred travel time data."}
+par(mfrow=c(1,2))
+
+#quantile-expectile correspondecne
+alphas<-sapply(exps,function(x,q){sum(x<q)/length(x)},x=ys)
+#linear interpolation
+tau_new = approx(taus, alphas, xout=taus)
+#tau_new$y[tau_new$x==cmp[2]]<-NA
+
+plot(tau_new$x,tau_new$y,type="l",ylim=c(0.5,1), xlim=c(0.5,1),axes=F,
+     xlab=bquote(tau[1]), ylab=bquote(tau[2](tau[1])))
+#points(cmp[2],tau_new$y[tau_new$x==cmp[2]], pch=16,cex=0.8,col="red")
+axis(1)
+axis(2)
+
+# #expectile and quantile ranges
+# 
+# plot(taus, delt1,type="l",col=2, xlab=bquote(tau),ylab=bquote(Delta[1]~Delta[2]))
+# lines(taus,delt2,col=4)
+
+#ttrrs
+plot(taus, ttrr1,type="l",col=2, xlab=bquote(tau),ylab=bquote(rho[1]~rho[2]), ylim=c(0.5,100),axes=F)
+lines(taus,ttrr2,col=4)
+axis(1)
+axis(2)
+legend("topleft",col=c(2,4),lwd=c(2,2),legend=c(bquote(rho[1]),bquote(rho[2])),bty="n")
+
+```
+
+As seen, the value of travel time reliability associated with $U_2$ is always higher than that of $U_1$ for the same preference parameterization $\beta/\gamma$.
+
+# Conclusion
+
+In this paper, we considered a classical specification of scheduling utility as asymmetric linear function of delays along with a new alternative specification based on asymmetric quadratic loss. We showed that the optimal departure choices for both utilities are tail indices of travel time distribution. Specifically, for the asymmetric linear specification those are certain quantiles and for the asymmetric quadratic specification, expectiles, of the travel time. Moreover, we demonstrated that there exists a correspondence of choices based on our alternative specification to the choices made according to the classical one in case of invertible cumulative distribution function. Finally, we show that our asymmetric quadratic preference formulation is a richer one, since unique optimum is obtained for any distribution of travel time with finite mean. Using the travel time data collected in Montreal, we empirically demonstrated the advantages of using the second utility specification. 
+
+
+# Appendix
+
+## Deriviations in Example \@ref(exm:duqande)
+
+For a mixure of $m$ nonoverlapping  uniforms (disjoint supports) with mixing parameter vector $\mathbf p=(p_1,\ldots,p_m)^\top$ where $p_m=1-\sum_{i=1}^{m-1}p_i$ and support edges $a_1<a_2<\ldots<a_m$:
+$$f(y)=\sum_{j=1}^m\frac{p_j}{a_{j+1}-a_j}\mathbf 1_{y\in [a_j,a_{j+1}]}.$$
+
+The inverse expectile function is defined as:
+
+\begin{equation}\tau(e_\tau) = \frac{\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\}}  {2\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} - \mathbb E\{(Y-e_\tau)\}}\end{equation}
+
+For $\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\}$ we have:
+
+- for $a_1\leq e_\tau< a_2$
+
+$$\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} = \int_{a_1}^{e_\tau}(y-e_\tau)\frac{p_1}{a_2-a_1}dy = \frac{p_1}{a_2-a_1}\int_{a_1}^{e_\tau}(y-e_\tau)dy$$
+
+$$ = \frac{p_1}{a_2-a_1}\frac 12[(y-e_\tau)^2]_{a_1}^{e_\tau} = -\frac{p_1}{a_2-a_1}\frac 12 (a_1-e_\tau)^2$$
+
+- for $a_2\leq e_\tau< a_3$
+
+$$\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} = \int_{a_1}^{a_2}(y-e_\tau)\frac{p_1}{a_2-a_1}dy + \int_{a_2}^{e_\tau}(y-e_\tau)\frac{p_2}{a_3-a_2}dy$$
+
+$$ = \frac{p_1}{a_2-a_1}\frac 12[(y-e_\tau)^2]_{a_1}^{a_2} + \frac{p_2}{a_3-a_2}\frac 12[(y-e_\tau)^2]_{a_2}^{e_\tau} =\frac{p_1}2\cdot (a_2+a_1-2e_\tau) -\frac{p_2}{a_3-a_2}\frac 12 (a_2-e_\tau)^2$$
+
+- for $a_i\leq e_\tau< a_{i+1}, 1<i\leq m$
+
+$$\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} =\int_{a_1}^{a_{i}}(y-e_\tau)f(y)dy +  \int_{a_i}^{e_\tau}(y-e_\tau)f(y)dy$$
+$$=\sum_{k=1}^{i-1}\frac{p_k}{a_{k+1}-a_k}\int_{a_k}^{a_{k+1}}(y-e_\tau)dy + \frac{p_i}{a_{i+1}-a_i} \int_{a_i}^{e_\tau}(y-e_\tau)dy$$
+
+$$=\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2 =\left(\sum_{k=1}^{i-1}{p_k}\frac{a_{k+1}+a_{k}}2-p_ke_\tau\right) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2 .$$
+In the expression above, the first term represents the weighted mean-expectile difference of mixture components with supports below the $i$th component and the second term measures weighted expectation below $e_\tau$ for the $i$th component.
+
+Also,
+
+$$\mathbb E(Y-e_\tau) =\sum_{j=1}^m\frac{p_j}{a_{j+1}-a_j}\int_{a_j}^{a_{j+1}}(y-e_\tau) dy = 
+\sum_{j=1}^m\frac{p_j}2(a_{j+1}+a_j-2e_\tau)$$
+
+
+
+Rearranged, we have
+$$\mathbb E(Y-e_\tau)  = \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 -e_\tau,$$
+which represents the weighted mean of mixture components minus the $\tau$-expectile.
+
+Hence,
+\begin{equation}\tau(e_\tau) = \begin{cases}
+0,&e_\tau<a_1,\\
+\frac{-\frac 12\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2}  {-\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_1\leq e_\tau< a_2,\\
+\frac{\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2}  {\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_i\leq e_\tau< a_{i+1},i=2,\ldots, m\\
+1, &e_\tau\geq a_{m+1}.
+\end{cases}\end{equation}
+
+## Deriviations in Example \@ref(exm:qdzheng)
+
+For $\mathbb E\{(Y-\mu_\tau)\mathbf 1_{Y\leq\mu_\tau}\}$ we have:
+
+- for $a_0\leq e_\tau< a_1$
+
+$$\mathbb E\{(Y-\mu_\tau)\mathbf 1_{Y\leq\mu_\tau}\} = (a_0-e_\tau)p_0.$$
+
+Analogous to the previous example, we have
+
+- for $a_1\leq e_\tau< a_2$
+
+$$\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} = (a_0-e_\tau)p_0 + \int_{a_1}^{e_\tau}(y-e_\tau)\frac{p_1}{a_2-a_1}dy$$
+$$= (a_0-e_\tau)p_0 -\frac{p_1}{a_2-a_1}\frac 12 (a_1-e_\tau)^2$$
+
+- for $a_2\leq \mu_\tau< a_3$
+
+$$\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} = (a_0-e_\tau)p_0 + \int_{a_1}^{a_2}(y-e_\tau)\frac{p_1}{a_2-a_1}dy + \int_{a_2}^{e_\tau}(y-\mu_\tau)\frac{p_2}{a_3-a_2}dy$$
+
+$$ = (a_0-e_\tau)p_0+\frac{p_1}2\cdot (a_2+a_1-2 e_\tau) -\frac{p_2}{a_3-a_2}\frac 12 (a_2-e_\tau)^2$$
+
+- for $a_i\leq e_\tau< a_{i+1}, 1<i\leq m$
+
+$$\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} =(a_0-e_\tau)p_0 + \int_{a_1}^{a_{i}}(y-e_\tau)f(y)dy +  \int_{a_i}^{\mu_\tau}(y-e_\tau)f(y)dy$$
+$$=(a_0-e_\tau)p_0+ \sum_{k=1}^{i-1}\frac{p_k}{a_{k+1}-a_k}\int_{a_k}^{a_{k+1}}(y-e_\tau)dy + \frac{p_i}{a_{i+1}-a_i} \int_{a_i}^{e_\tau}(y-e_\tau)dy$$
+
+$$=(a_0-e_\tau)p_0+ \frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2.$$
+
+Also,
+
+$$\mathbb E(Y-e_\tau) =(a_0-e_\tau)p_0 + \sum_{j=1}^m\frac{p_j}{a_{j+1}-a_j}\int_{a_j}^{a_{j+1}}(y-e_\tau) dy = \\
+=(a_0-e_\tau)p_0+ \sum_{j=1}^m\frac{p_j}2(a_{j+1}+a_j-2 e_\tau)$$
+
+Hence,
+\begin{equation}\tau(\mu_\tau) = \begin{cases}
+0,&e_\tau<a_0,\\
+(a_0-e_\tau)p_0,&a_0\leq e_\tau<a_1,\\
+\frac{(a_0-e_\tau)p_0-\frac 12\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2}  {(a_0-e_\tau)p_0-\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_1\leq e_\tau< a_2,\\
+\frac{(a_0-e_\tau)p_0+\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2}  {(a_0-e_\tau)p_0+\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2- \sum_{j=1}^mp_j\frac{a_{j+1}+a_j}2 +e_\tau} ,&a_i\leq e_\tau< a_{i+1},i=2,\ldots, m\\
+1, &e_\tau\geq a_{m+1}.
+\end{cases}\end{equation}
+
+## Derivations in Example \@ref(exm:corrqe)
+
+$$\tau(\omega)=\frac{-\omega q_\omega(T) + G(q_\omega(T))}{-\mathbb ET - 2G(q_\omega(T)) + (1-2\omega)q_\omega(T)},$$
+
+where $G(q) = \int_{-\infty}^qt~dF(t)$
+
+We have 
+for $\omega <p$, $q_\omega= a_1 + \frac{a_2-a_1} p\omega$,
+$$G(q) = \int_{a_1}^q t\cdot\frac p{a_2-a_1}dt = \frac 12 \frac p{a_2-a_1}(q^2-a_1^2)$$
+
+and for $p<\omega$, $q_\omega = a_3 + \frac{a_4-a_3}{1-p}(\omega-p),$
+$$G(q) = \int_{a_1}^{a_2} t\cdot\frac p{a_2-a_1}dt + \int_{a_3}^q t\cdot\frac {1-p}{a_2-a_1}dt = \frac 12 p(a_1+a_2) + \frac 12 \frac {1-p}{a_4-a_3}(q^2-a_3^2)$$
+
+
+So,
+
+$$\tau(\omega)=\begin{cases}
+\frac{-\omega q_\omega+ \frac 12 \frac p{a_2-a_1}(q_\omega^2-a_1^2)}{-\frac{p(a_1+a_2)}{2}-\frac{(1-p)(a_3+a_4)}{2} - \frac p{a_2-a_1}(q_\omega^2-a_1^2) + (1-2\omega)q_\omega},&q_\omega= a_1 + \frac{a_2-a_1} p\omega, \omega <p\\
+\frac{-\omega q_\omega(T) + \frac 12 p(a_1+a_2) + \frac 12 \frac {1-p}{a_4-a_3}(q_\omega^2-a_3^2)}{-\frac{(1-p)(a_3+a_4)}{2} - \frac{3p(a_1+a_2)}2 - \frac {1-p}{a_4-a_3}(q^2-a_3^2) + (1-2\omega)q_\omega},&q_\omega = a_3 + \frac{a_4-a_3}{1-p}(\omega-p), p<\omega
+\end{cases}.$$
+
+
+TODO:
+
+- add dashed lines to the empirical correspondence
+- check the tables and their positions
+- check the figures, scale
+- check indices, 1,2 notation or e(T) or mention that it is omitted where unambiguous.
