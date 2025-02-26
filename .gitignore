@@ -9,4 +9,5 @@ literature/
 .tex
 .spl
 .bib
-traffic-expectiles-files
+traffic-expectiles-files/
+traffic-expectiles-files/figure-latex

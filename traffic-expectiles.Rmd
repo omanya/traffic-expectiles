@@ -27,8 +27,6 @@ numbersections: true
 bibliography: traffic-expectiles.bib
 biblio-style: elsarticle-harv # author year style for natbib - use 'elsarticle-num' or 'elsarticle-num-names' for numbered scheme
 classoption: preprint, 3p, authoryear # remove authoryear is not using `elsarticle-harv`
-# Use a CSL with `citation_package = "default"`
-# csl: https://www.zotero.org/styles/elsevier-harvard
 output:
   bookdown::pdf_book:
     base_format: rticles::elsevier_article
@@ -41,18 +39,6 @@ knitr::opts_chunk$set(echo = FALSE, message=FALSE)
 #date: "`r Sys.Date()`"
 #We propose a new scheduling preference specification, that influence optimal departure time choices of commuters, by generalizing the classical asymmetric linear loss on early and late delays to asymmetric $L_p$-loss.
 ```
-
-<!-- \begin{abstract} -->
-
-<!-- We consider two alternative preference specifications for optimal departure time choices: the classical asymmetric linear loss for early and late delays, and a new specification based on asymmetric quadratic loss. We demonstrate that the resulting optimal choices correspond to the tail indices of the travel time distribution. Specifically, for asymmetric linear preferences, the optimal choices are the quantiles, while for asymmetric quadratic preferences, they are the expectiles of the travel time distribution. We establish a correspondence between the choices induced by these two utility specifications, highlighting that our asymmetric quadratic preference class is a valid alternative, demonstrating favorable properties in the examples and application provided. For both utility specifications, we derive travel time reliability ratios and offer a straightforward computation approach using the concepts of $\tau$-deviation and $\tau$-variance. Finally, we use Montreal travel time data for two alternative routes to fit a mixture of gamma distributions and to compare the behavior of the optimal departure time choices and the travel time reliability ratio curves induced by the different utility specifications. -->
-<!-- \end{abstract} -->
-<!-- \begin{keywords} -->
-<!-- scheduling utility, asymmetric loss, expectiles, quantiles, travel time reliability -->
-<!-- \end{keywords} -->
-<!-- \begin{JEL} -->
-<!-- C46, C60, R41 -->
-<!-- \end{JEL} -->
-
 
 # Background
 
@@ -107,8 +93,6 @@ We assume that the traveler maximizes her expected utility $\big(\mathbb E(\cdot
 Both utility formulations fall under the mean-dispersion framework (@engelson2016) with different notions of dispersion used. For $\beta=\gamma$, \@ref(eq:eu1) corresponds to a symmetric mean-absolute deviation utility, and the optimal choice $d^*_1$ corresponds to the median of the travel times. For $\gamma>\beta$ it remains asymmetric, and the second term in the maximized expected utility $\mathbb EU^*_1(d_1^*,T)$ is an asymmetric version of the absolute deviation, termed in @tran2019 as the **$\tau$-deviation** (asymmetrically weighted absolute deviation around the **$\tau$-quantile**). Similarly, for $\beta=\gamma$, \@ref(eq:eu2) becomes $\mathbb EU_2(d,T) = -\left[\alpha \mathbb ET + \beta\mathbb E\left\{(T-d)^2\right\}\right]$,
 which is maximized for $d_2^* = \mathbb ET$. Hence, we recover the classical mean-variance utility $\mathbb EU^*_2(d_2^*,T)$ used by @jackson1982. For $\gamma>\beta$ the second term in the maximized expected utility $\mathbb EU^*_2(d_2^*,T)$ is a generalized version of the variance - **the $\tau$-variance** - around a certain tail index - **the $\tau$-expectile**. 
 
-
-
 ```{r, message=F}
 #scheduling utility functions
 u<-function(t,d,alpha,beta, gamma, type = 1){
@@ -162,30 +146,6 @@ departure_time<-c(get_opt_departure(t,tau,type=1),get_opt_departure(t,tau,type=2
 #departure_time
 ```
 
-<!--
-```{r figure1, fig.cap="An illustration of the asymmetric linear (left) and the asymmetric quadratic (right) traveler's utility functions (\\(\\beta=1,\\gamma=1.5\\)) with optimal departure times $d^*$ for exponentially distributed travel time \\(T\\) with intensity parameter \\(0.01\\)."}
-# #par(mfrow=c(1,2),xpd=T)
-# par(lwd=2,mfrow=c(1,2))
-# 
-# plot(d,uvec1, type="l", axes=F, ylab=bquote(EU[a](d,T)),lty=2, ylim=c(-500,-100))
-# lines(d,uvec2/100,lty=1)
-# points(d[which.max(uvec2)],max(uvec2)/100,col=2)
-# points(d[which.max(uvec1)],max(uvec1),col=2)
-# #text(d[which.max(uvec1)],max(uvec1), paste0("d*=",round(d[which.max(uvec1)],2)), pos=3)
-# text(d[which.max(uvec1)],max(uvec1), expression(paste(d[1]^"*")), pos=3)
-# text(d[which.max(uvec2)],max(uvec2)/100, expression(paste(d[2]^"*")), pos=3)
-# axis(1, at=c(50,100,150,200), labels=rep("",4))
-# axis(2, at=c(-500,-300,-100), labels=rep("",3))
-# legend("topright",lty=c(2,1), lwd=2,legend=c("a=1","a=2"))
-# 
-# # plot(d,uvec2, type="l",axes=F, ylab=bquote(EU[2](d,T)))
-# # points(d[which.max(uvec2)],max(uvec2),col=2)
-# # text(d[which.max(uvec2)],max(uvec2), paste0("d*=",round(d[which.max(uvec2)],2)), pos=3)
-# # axis(1)
-# # axis(2, at=seq(min(uvec2), max(uvec2),length.out=5), labels=rep("",5))
-```
--->
-
 # Optimal departure time choice under asymmetric scheduling preferences
 
 In this section, we demonstrate that the optimal departure time is equal to a certain quantile (see @koenker1978) in case of $U_1(d,T)$ and a certain expectile (see @newey1987) for $U_2(d,T)$ of the travel time distribution. The specific quantile or expectile levels depend on the asymmetry parameters ($\beta$ and $\gamma$) of the traveler's utility function. Therefore, we briefly review the concepts of quantiles and expectiles in the following.
@@ -232,11 +192,6 @@ In case of the expectiles, using formulas (18) and (19) in @holzmann2016 we have
 
 This expression is continuous and strictly increasing in $\tau$ (see Figure \@ref(fig:figex1)).
 
-```{r}
-#qbinom(0.6,1,0.5)
-```
-
-
 ```{r figex1, out.width="100%", fig.height = 3, fig.width = 10,fig.cap = "Right panel: the considered two-value travel time distribution and the expectile and quantile values (below the $x$-axis) in Example 3.1 for a grid of $\\tau$-values. Left panel: the expectile and the quantile functions for the two-value discrete distribution with varying $p$. "}
 t<-10
 l<-100
@@ -252,16 +207,12 @@ arrows(x0=t+l,y0=0,x1=t+l,y1=1-p0,code=0,lwd=2)
 arrows(-10,0,120,0,code=2,length=0.1)
 arrows(0,-0.1,0,1.1,code=2,length=0.1)
 
-#arrows(-0.1,1.03,120,1.03,code=0,lty=2)
-#text(-0.1,1,"1",pos=2)
 arrows(-0.1,p0,t,p0,code=0,lty=2)
 arrows(-0.1,1-p0,t+l,1-p0,code=0,lty=2)
 text(-0.1,p0,"p",pos=2)
 text(-0.1,1-p0,"1-p",pos=2)
 text(t+l,0,bquote(t[2]),pos=1,cex=0.9)
 text(t-0.15,0,bquote(t[1]),pos=1,cex=0.9)
-#lines(mutau,taus,pch="|",col=4)
-#lines(qtau,taus,pch="|",col=2)
 
 points(mutau,rep(-0.1,length(mutau)),pch="|",col=scales::alpha(4,0.6))
 text(60,-0.1,bquote(e[tau]),pos=1)
@@ -270,7 +221,6 @@ arrows(65,-0.15,80,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
 
 points(qtau,rep(-0.2,length(qtau)),pch="|",col=scales::alpha(2,0.6))
 text(60,-0.2,bquote(q[tau]),pos=1)
-#text(68,-0.2,"?",pos=1)
 arrows(55,-0.25,40,-0.25,code=2,length=0.1,col=scales::alpha(2,0.6))
 arrows(65,-0.25,80,-0.25,code=2,length=0.1,col=scales::alpha(2,0.6))
 legend(70,p0,col=c(4,2),lwd=c(1,1),legend=c(bquote(e[tau]),bquote(q[tau])),bty="n")
@@ -288,7 +238,6 @@ lines(taus[taus<p1],qtau1[taus<p1],lty=2,col=2,lwd=2)
 lines(taus[taus>p1],qtau1[taus>p1],lty=2,col=2,lwd=2)
 arrows(-0.01,-5,-0.01,120,code=2,length=0.1)
 arrows(-0.1,0.1,1.1,0,code=2,length=0.1)
-#legend(0.1,100,lty=c(1,2),legend=c(paste0("p = ",p0),paste0("p = ",p1)),bty="n")
 legend(0.1,100,lty=c(1,2),lwd=2,legend=c(bquote(p == p[0]),bquote(p == p[1])),bty="n")
 
 legend(0.1,70,col=c(4,2),lwd=c(1,1),legend=c(bquote(e[tau](tau)),bquote(q[tau](tau))),bty="n")
@@ -368,20 +317,6 @@ mutaus2<-seq(a1,b22,0.5)
 
 p1<-0.8
 
-# tauf<-function(x,a1,b1,a2,b2,p){
-#   Exe<-p*(a1+b1)/2+(1-p)*(a2+b2)/2 - x
-#   if(x>=a1&x<=b1){
-#     tau<- (-1/2*(p/(b1-a1)*(a1-x)^2)) / (-p/(b1-a1)*(a1-x)^2-Exe)
-#   }else if(x>b1&x<a2){
-#     tau<-(1/2*p*(b1+a1-2*x)) / (p*(b1+a1-2*x) - Exe)
-#   } else if (x>=a2&x<=b2){
-#     tau<-(1/2*p*(b1+a1-2*x) - 1/2*((1-p)/(b2-a2)*(a2-x)^2)) / (p*(b1+a1-2*x) - ((1-p)/(b2-a2)*(a2-x)^2) - Exe)
-#   } else {
-#     tau<-NA
-#   }
-#   return(tau)
-# }
-
 tauf<-function(x,a1,b1,a2,b2,p){
   Exe<-p*(a1+b1)/2+(1-p)*(a2+b2)/2 - x
   if(x>=a1&x<=b1){
@@ -435,9 +370,6 @@ arrows(b2,0,b2,1-p0,code=0,lty=2)
 arrows(-10,0,120,0,code=2,length=0.1)
 arrows(0,-0.1,0,1.1,code=2,length=0.1)
 
-#arrows(-0.1,1,120,1,code=0,lty=2)
-#text(-0.1,1,"1",pos=2)
-
 arrows(-0.1,p0,a1,p0,code=0,lty=2)
 arrows(-0.1,1-p0,a2,1-p0,code=0,lty=2)
 
@@ -449,29 +381,16 @@ text(a2,0,bquote(a[3]),pos=1)
 text(b1,0,bquote(a[2]),pos=1)
 text(b2,0,bquote(a[4]),pos=1)
 
-
-#lines(mutauss$y,mutauss$x,pch="|",col=4,cex=0.5)
-#lines(mutauss1$y,mutauss1$x,pch="|",col=4,cex=0.5,lty=2)
-
 points(mutauss$y,rep(-0.1,length(taus)),pch="|",col=scales::alpha(4,0.4),cex=0.8)
 text(60,-0.12,expression(paste(e[tau] ,",", tau %in% "(0,1)")),pos=1)
 arrows(55,-0.15,40,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
 arrows(65,-0.15,80,-0.15,code=2,length=0.1,col=scales::alpha(4,0.6))
-
-#lines(qtauss[taus<p0],taus[taus<p0],pch="|",cex=0.5,col=2)
-#lines(c(a2,qtauss[taus>p0]),c(p0,taus[taus>p0]),pch="|",cex=0.5,col=2)
-
-#lines(qtauss1[taus<p1],taus[taus<p1],pch="|",cex=0.5,col=2,lty=2)
-#lines(c(a2,qtauss1[taus>p1]),c(p1,taus[taus>p1]),pch="|",cex=0.5,col=2,lty=2)
 
 points(c(a2,qtauss),rep(-0.25,length(taus)+1),pch="|",col=scales::alpha(2,0.4),cex=0.8)
 text(60,-0.27,expression(paste(q[tau] ,",", tau %in% "(0,1)\\{p}")),pos=1)
 arrows(55,-0.3,40,-0.3,code=2,length=0.1,col=scales::alpha(2,0.6))
 arrows(65,-0.3,80,-0.3,code=2,length=0.1,col=scales::alpha(2,0.6))
 
-#text(60,-0.37,bquote(q[p]),pos=1)
-#text(67,-0.37," = ?",pos=1)
-#legend(50,0.5,col=c(2,4),lwd=c(1,1),legend=c(bquote(tau(q[tau])),bquote(tau(e[tau]))),bty="n")
 legend(70,p0,col=c(4,2),lwd=c(1,1),legend=c(bquote(e[tau]),bquote(q[tau])),bty="n")
 ####################################################################################################
 par(xpd=T)
@@ -503,7 +422,6 @@ lines(qtauss2[taus<p0],taus[taus<p0],pch="|",cex=0.5,col=2,lty=2,lwd=2)
 lines(c(a2,qtauss2[taus>p0]),c(p0,taus[taus>p0]),pch="|",cex=0.5,col=2,lty=3,lwd=2)
 #
 legend(90,0.5,col=c(2,4),lwd=c(2,2),legend=c(bquote(tau(q[tau])),bquote(tau(e[tau]))),bty="n")
-#legend(50,0.5,lty=c(1,2),lwd=c(1,1),legend=c(paste0("p = ",p0),paste0("p = ",p1)),bty="n")
 legend(50,0.5,lty=c(1,2,3),lwd=c(2,2,2),legend=c(bquote(p == p[0]),bquote(p == p[1]), bquote(a[4]%up% tilde(a)[4])),bty="n")
 ```
 
@@ -603,8 +521,6 @@ arrows(30,0.1,55,0.04,code=2,col=mycol2,length=0.1)
 par(xpd=T)
 arrows(-2,0,85,0,code=2,length=0.1)
 arrows(0,-0.01,0,0.4,code=2,length=0.1)
-#arrows(kf*tf,-0.01,kf*tf,dgamma(kf*tf,shape=kf,scale=tf), lty=2, col="gray44",code=0)
-#arrows(kd*td,-0.01,kd*td,dgamma(kd*td,shape=kd,scale=td), lty=2, col="gray44",code=0)
 text(40,0,"t",pos=1)
 text(0,0.2,"f(t)",pos=2)
 
@@ -797,13 +713,10 @@ arrows(p0,-0.05,p0,1,col="gray44",code=0,lty=2)
 #
 text(p0-0.2,0.7,bquote(omega==p),col="gray44",pos=3, cex=cexpt)
 arrows(0.7,0.72,0.79,0.5,code=2,length=0.1,col="gray44", angle=15)
-#
-#points(w, tw)
+
 indna<-which(is.na(tw))
 lines(w[1:min(indna)],tw[1:min(indna)],lwd=2)
 lines(w[max(indna):length(w)],tw[max(indna):length(w)],lwd=2)
-#axis(1,at=c(0,0.25,0.5,0.75,1))
-#axis(2,at=c(0,0.25,0.5,0.75,1))
 arrows(-0.1,0,1.1,0,code=2,length=0.1)
 arrows(0,-0.1,0,1.1,code=2,length=0.1)
 text(c(0,0,0),c(-0.07,0.5,1.06),c(0,0.5,1),pos=2, cex=cexpt)
@@ -834,13 +747,11 @@ arrows(p0,-0.05,p0,1,col="gray44",code=0,lty=2)
 #
 text(p0-0.2,0.7,bquote(omega==p),col="gray44",pos=3,cex=cexpt)
 arrows(0.7,0.72,0.79,0.5,code=2,length=0.1,col="gray44", angle=15)
-#
-#points(w, tw)
+
 indna<-which(is.na(tw))
 lines(w[1:min(indna)],tw[1:min(indna)], lwd=2)
 lines(w[max(indna):length(w)],tw[max(indna):length(w)],lwd=2)
-#axis(1,at=c(0,0.25,0.5,0.75,1))
-#axis(2,at=c(0,0.25,0.5,0.75,1))
+
 arrows(-0.1,0,1.1,0,code=2,length=0.1)
 arrows(0,-0.1,0,1.1,code=2,length=0.1)
 text(c(0,0,0),c(-0.07,0.5,1.1),c(0,0.5,1),pos=2)
@@ -983,22 +894,22 @@ qtau1<-rep(t,length(taus)); qtau1[taus>p1]<-t+l
 plot(taus[taus<p0],qtau[taus<p0],type="l",ylim=c(0,120), xlim=c(0,1.2),axes=F,xlab="", ylab="",col=2, lwd=2)
 lines(taus,mutau,lty=1,col=4, lwd=2)
 lines(taus,mutau1,lty=2,col=4, lwd=2)
-#lines(taus[taus<p0],qtau[taus<p0],lty=1,col=scales::alpha(2,0.5),lwd=1.5)
+
 lines(taus[taus>p0],qtau[taus>p0],lty=1,col=scales::alpha(2,0.7),lwd=2)
 lines(taus[taus<p1],qtau1[taus<p1],lty=2,col=2,lwd=2)
 lines(taus[taus>p1],qtau1[taus>p1],lty=2,col=2,lwd=2)
 arrows(-0.01,-5,-0.01,120,code=2,length=0.1)
 arrows(-0.1,0.1,1.1,0,code=2,length=0.1)
-#legend(0.1,100,lty=c(1,2),legend=c(paste0("p = ",p0),paste0("p = ",p1)),bty="n")
+
 legend(0.1,100,lty=c(1,2),lwd=c(2,2),legend=c(bquote(p == p[0]),bquote(p == p[1])),bty="n")
 
 legend(0.1,70,col=c(4,2),lwd=c(2,2),legend=c(bquote(e[tau](tau)),bquote(q[tau](tau))),bty="n")
 text(0.5,-10,bquote(tau),pos=1)
-#text(-0.01,60,bquote(q[tau]),pos=2)
+
 text(-0.01,t,bquote(t[1]), pos=2)
 text(-0.01,t+l,bquote(t[2]), pos=2)
 text(0,0,0,pos=1)
-#text(1,0,1,pos=1)
+
 points(c(0),c(-0.1),pch="|",cex=0.5)
 points(c(-0.01,-0.01),c(t,t+l),pch="-",cex=1)
 
@@ -1038,24 +949,23 @@ lines(taus[taus<p0],qtau2[taus<p0],lty=2,col=2,lwd=2)
 lines(taus[taus>p0],qtau2[taus>p0],lty=2,col=2,lwd=2)
 arrows(-0.01,-5,-0.01,120,code=2,length=0.1)
 arrows(-0.1,0.1,1.1,0,code=2,length=0.1)
-#legend(0.1,100,lty=c(1,2),legend=c(paste0("p = ",p0),paste0("p = ",p1)),bty="n")
+
 legend(0.1,100,lty=c(2),lwd=2,legend=c(bquote(t[2] %down% tilde(t)[2])),bty="n")
 
 legend(0.1,70,col=c(4,2),lwd=c(2,2),legend=c(bquote(e[tau](tau)),bquote(q[tau](tau))),bty="n")
 text(0.5,-10,bquote(tau),pos=1)
-#text(-0.01,60,bquote(q[tau]),pos=2)
+
 text(-0.01,t,bquote(t[1]), pos=2)
 text(-0.01,t+l,bquote(t[2]), pos=2)
 text(0,0,0,pos=1)
-#text(1,0,1,pos=1)
+
 points(c(0),c(-0.1),pch="|",cex=0.5)
 points(c(-0.01,-0.01),c(t,t+l),pch="-",cex=1)
 
 arrows(p0,0,(p0+p1)/2+Delt,0,code=0,lwd=3)
 points(c(0,p0),c(-0.1,0),pch="|",cex=0.5)
-#points(c(0,p1),c(-0.1,0),pch="|",cex=0.5)
+
 text(p0,0,bquote(p[0]),pos=1, cex=0.8)
-#text(p1,0,bquote(p[1]),pos=1,cex=0.8)
 
 #p-Delta,p+Delta
 Delt<-0.15
@@ -1130,14 +1040,10 @@ text(b2,0,bquote(a[4]),pos=1)
 text(b22,0,bquote(tilde(a)[4]),pos=1)
 #
 lines(mutauss$y,mutauss$x,pch="|",col=4,cex=0.5, lwd=2)
-#lines(mutauss1$y,mutauss1$x,pch="|",col=4,cex=0.5,lty=2)
 lines(c(mutauss2$y,b22),c(mutauss2$x,1),pch="|",col=4,cex=0.5,lty=2, lwd=2)
 #
 lines(qtauss[taus<p0],taus[taus<p0],pch="|",cex=0.5,col=2, lwd=2)
 lines(c(a2,qtauss[taus>p0]),c(p0,taus[taus>p0]),pch="|",cex=0.5,col=2, lwd=2)
-#
-#lines(qtauss1[taus<p1],taus[taus<p1],pch="|",cex=0.5,col=2,lty=2)
-#lines(c(a2,qtauss1[taus>p1]),c(p1,taus[taus>p1]),pch="|",cex=0.5,col=2,lty=2)
 #
 lines(qtauss2[taus<p0],taus[taus<p0],pch="|",cex=0.5,col=2,lty=2, lwd=2)
 lines(c(a2,qtauss2[taus>p0]),c(p0,taus[taus>p0]),pch="|",cex=0.5,col=2,lty=2, lwd=2)
@@ -1151,7 +1057,7 @@ text(-1,(p0+p1)/2-Delt,bquote(p-Delta),pos=2,cex=0.8)
 text(-1,p0,bquote(p[0]),pos=2,cex=0.8)
 # shaded area
 ind<-taus>=(p0+p1)/2-Delt&taus<=(p0+p1)/2+Delt
-tseq<-taus[ind]#seq((p0+p1)/2-Delt,(p0+p1)/2+Delt, 0.01)
+tseq<-taus[ind]
 qseq<-qtauss[ind]
 qseq2<-qtauss2[ind]
 museq<-mutauss$y[ind]
@@ -1162,7 +1068,6 @@ polygon(c(museq,museq2[length(museq2)], rev(museq2),museq[1]), c(tseq,(p0+p1)/2+
 polygon(c(qseq,qseq2[length(qseq2)], rev(qseq2),qseq[1]), c(tseq,(p0+p1)/2+Delt, rev(tseq),(p0+p1)/2-Delt), col=scales::alpha(2,0.2),border=NA)
 #
 legend(90,0.5,col=c(2,4),lwd=c(2,2),legend=c(bquote(tau(q[tau])),bquote(tau(e[tau]))),bty="n")
-#legend(50,0.5,lty=c(1,2),lwd=c(1,1),legend=c(paste0("p = ",p0),paste0("p = ",p1)),bty="n")
 legend(50,0.5,lty=c(2),lwd=c(2),legend=c(bquote(a[4]%up% tilde(a)[4])),bty="n")
 
 #grid
@@ -1195,14 +1100,8 @@ lines(qtaus, taus, col=2, lwd=2)
 arrows(-10,0,120,0,code=2,length=0.1)
 arrows(0,-0.1,0,1.1,code=2,length=0.1)
 points(c(0),c(1),pch="-")
-
-#text(-0.1,c(p), bquote(p[0]),pos=2)
-#text(-0.1,c(p1), bquote(p[1]),pos=2)
 text(-0.1,c(1,0.04),c("1","0"),pos=2)
 text(0,0.5,bquote(tau),pos=2)
-
-#lines(mutaus1,taus,col=4,lty=2)
-#lines(qtaus1,taus,col=2,lty=2)
 
 lines(mutaus2,taus,col=4,lty=2, lwd=2)
 lines(qtaus2,taus,col=2,lty=2, lwd=2)
@@ -1217,7 +1116,7 @@ text(-1,(p0+p1)/2-Delt,bquote(p-Delta),pos=2,cex=0.8)
 text(-1,p0,bquote(p[0]),pos=2,cex=0.8)
 # shaded area
 ind<-taus>=(p0+p1)/2-Delt&taus<=(p0+p1)/2+Delt
-tseq<-taus[ind]#seq((p0+p1)/2-Delt,(p0+p1)/2+Delt, 0.01)
+tseq<-taus[ind]
 qseq<-qtaus[ind]
 qseq2<-qtaus2[ind]
 museq<-mutaus[ind]
@@ -1238,8 +1137,6 @@ arrows(0,(p0+p1)/2+Delt,qtaus2[taus==(p0+p1)/2+Delt],code=0,lty=2,col="gray44")
 tol = 1e-5
 arrows(0,(p0),qtaus[abs(taus-p0)<=tol],code=0,lty=2,col="gray44")
 arrows(0,p0,0,(p0+p1)/2+Delt,code=0,lwd=3)
-#arrows(0,p0,0,(p0+p1)/2+Delt,code=0,lwd=3,col=2)
-#arrows(-1,(p0+p1)/2-Delt,-1,(p0+p1)/2+Delt,code=0,lwd=3,col=4)
 ```
 
 On Figure \@ref(fig:figexp22), we observe departure time adjustments across the entire range of the preference parameter $\tau\in[p-\Delta,p+\Delta]$ in the case of $U_2$. In contrast, with $U_1$, the behavioral reaction is limited to $\tau\in[p_0,p+\Delta]$. From a behavioral perspective, it is not clear why only specific preference ranges are effected by the changes in travel time distribution.
@@ -1335,7 +1232,6 @@ ratios<-seq(1,200,0.1)
 taus<-1 / (1+1/ratios)
 taus<-seq(0.5,0.95,0.01)
 p0=0.7; p1=0.8
-#taus[taus==p0]<-taus[taus==p0]+0.001
 ratios<-taus/(1-taus)
 ```
 
@@ -1362,8 +1258,7 @@ for (i in 1:length(taus)){
   rho1[i]<-beta/alpha*(1/(1-taus[i]))*(taus[i]*mean(((yss-qyss1[i])[yss>qyss1[i]])^(1)) + (1-taus[i])*mean(((qyss1[i] -yss)[yss<=qyss1[i]]^(1))))
   rho2[i]<-beta/alpha*(1/(1-taus[i]))*(taus[i]*mean(((yss-qyss2[i])[yss>qyss2[i]])^(2)) + (1-taus[i])*mean(((qyss2[i] -yss)[yss<=qyss2[i]]^(2))))
 }
-#mean(rho1)
-#mean(rho2)
+
 # scale to [0,1]
 scale01<-function(x,na.rm=T){(x-min(x,na.rm=T))/(max(x,na.rm=T)-min(x,na.rm=T))}
 devt<-scale01(devt)
@@ -1371,12 +1266,6 @@ vart<-scale01(vart)
 rho1<-scale01(rho1)
 rho2<-scale01(rho2)
 
-
-# par(mfrow=c(1,2))
-# plot(taus,devt,type="l",col=2)
-# lines(taus,vart,col=4)
-# plot(taus,rho1, type="l",col=2)
-# lines(taus,rho2,col=4)
 
 
 ```
@@ -1393,13 +1282,6 @@ par(xpd=F)
 plot(taus,devt,type="l",col=2, ylim=c(0,1.1),xlim=c(0.5,1.1),axes=F,xlab="",ylab="", lwd=2)
 lines(taus,vart,col=4, lwd=2)
 
-#lines(taus, ttrr11,lty=2,col=2)
-#lines(taus,ttrr21,lty=2, col=4)
-
-
-#text(0.41,0.75,bquote(tau[2]))
-
-#legend(0.5,0.60,col=c(2,4),lwd=c(2,2),legend=c(bquote(rho[1](tau)),bquote(rho[2](tau))),bty="n")
 legend(0.5,0.45,col=c(2,4),lwd=c(2,2),legend=c(bquote(Dev[tau](T[S])),bquote(Var[tau](T[S]))),bty="n")
 arrows(0.48,0,1.1,0,code=2,length=0.1)
 arrows(0.49,-0.10,0.49,1.1,code=2,length=0.1)
@@ -1417,31 +1299,12 @@ text(0.5,0,0.5, pos=1)
 text(1,0,1, pos=1)
 
 text(p0,0,bquote(p), pos=1)
-#arrows(p0,0,p0,devt[taus==p0],code=0,lty=2,col="gray44")
-
-
-# text(c(0.49),c(30),bquote(rho[a]),pos=2)
-# text(c(0.7),c(-10),bquote(tau),pos=1)
-# text(c(0.5,0.6,0.7,0.8,0.9),c(0,0,0,0,0),c(0.5,0.6,0.7,0.8,0.9),pos=1)
-# points(c(0,0),c(0.5,1), pch="-")
-# points(c(0.5,0.6,0.7,0.8,0.9),c(0,0,0,0,0),pch="|",cex=0.5)
-# 
-# legend(0.63,60,lty=c(3),lwd=c(1),legend=c(bquote(a[4]%up% tilde(a)[4])),bty="n")
-# 
-# legend(50,0.5,lty=c(1,2,3),lwd=c(1,1,1),legend=c(bquote(p == p[0]),bquote(p == p[1]), bquote(a[4]%up% tilde(a)[4])),bty="n")
-
 
 ######################################################
 #ttrrs mixed gamma
 par(xpd=F)
 plot(taus,rho1,type="l",col=2, ylim=c(0,1.1),xlim=c(0.5,1.1),axes=F,xlab="",ylab="", lwd=2)
 lines(taus,rho2,col=4, lwd=2)
-
-#lines(taus, ttrr11,lty=2,col=2)
-#lines(taus,ttrr21,lty=2, col=4)
-
-
-#text(0.41,0.75,bquote(tau[2]))
 
 legend(0.5,0.45,col=c(2,4),lwd=c(2,2),legend=c(bquote(rho[1](tau)),bquote(rho[2](tau))),bty="n")
 arrows(0.48,0,1.1,0,code=2,length=0.1)
@@ -1459,8 +1322,6 @@ text(0.49,1,1, pos=2)
 text(0.5,0,0.5, pos=1)
 text(p0,0,bquote(p), pos=1)
 text(1,0,1, pos=1)
-
-#arrows(p0,0,p0,rho1[taus==p0],code=0,lty=2,col="gray44")
 
 ```
 
@@ -1495,11 +1356,6 @@ Thus, our model specification representing the choices based on $U_1$ ($a=1$) or
 
 where $\Phi(z)$ denotes the distribution function of the standard normal distribution and $p(CHOICE=1|T_{i,j},ELATE^a_{pos,i,j}, ELATE^a_{neg,i,j}, R_j)$ denotes the individual conditional probability of selecting time slot $i$ on route $j$ from the available time slots $i=1, \ldots,n$, and routes $j=1,\ldots,J$ based on the linear loss ($a=1$) or the squared loss ($a=2$) in the scheduling component.
 
-<!--Our second model represents choices based on $U_2$:
-
-\begin{equation}\ln \frac{p(T_i,ELATE^2_{i,pos}, ELATE^2_{i,neg}, R_i)}{1-p(T_i,ELATE^2_{i,pos}, ELATE^2_{i,neg},R_i)} = \alpha_{2} T_i + \beta_{2} ELATE^2_{i, pos} + \gamma_2ELATE^2_{i,neg} + \delta_1R_{i,1},+ \ldots +\delta_4R_{i,4}  (\#eq:logit2) \end{equation}
-
-where $p(T_i,ELATE^2_{i,pos}, ELATE^2_{i,neg})$ denotes the conditional probability of selecting time slot $i$ from the available time slots $i=1, \ldots,n,$ based on the squared loss in the scheduling part. -->
 To assess the goodness-of-fit of the models above, we employ a leave-one-out cross-validation procedure. First, we fit the models in \@ref(eq:probit) separately for each participant, using all but one route (containing a chosen departure time) for training. We then predict the participant’s choice for the hold-out route based on the fitted models. The accuracy of these predictions is evaluated using the root mean squared prediction error (RMSPE) and the proportion of correctly predicted choices. A prediction is considered correct if the actual choice made by the participant corresponds to the time slot with the highest predicted probability. This cross-validation procedure is repeated until every route containing a chosen departure time has been left out once and the participant’s choice has been predicted accordingly. The entire procedure—including fitting the probit choice models in \@ref(eq:probit) and performing cross-validation—is repeated for each participant. 
 
 ```{r}
@@ -1542,91 +1398,9 @@ players = unique(choices$PLAYER_ID)
 choices = transform(choices,TT_INFO = TT_INFO/60, ELATE_pos = ELATE_pos/60, ELATE_neg = ELATE_neg/60, ELATE2_pos = ELATE2_pos/3600, ELATE2_neg = ELATE2_neg/3600)
 ```
 
-```{r}
-# p=1;r=2
-# for(p in 1:length(players)){
-#   for(r in 1:length(routes)){
-#     dist_times = unique(choices$TT_INFO[choices$PLAYER_ID == players[p]&choices$PATH_NAME_UNIQUE == routes[r]])
-#   }
-# }
-```
-
-```{r}
-# taus<-seq(0.3,0.9,0.05)
-# qs = es = matrix(NA, length(routes),length(taus))
-# 
-# par(mfrow = c(3,5), mar=c(2,1,1,1))
-# for(r in 1:length(routes)){
-#   dist_times = unique(choices$TT_INFO[choices$PATH_NAME_UNIQUE == routes[r]])
-#  #length(dist_times)
-#   plot(density(dist_times), xlab="",ylab="",axes=F, main="")
-#   axis(1)
-#   qs[r,] = quantile(dist_times,probs=taus)
-#   es[r,] = expectreg::expectile(dist_times, probs=taus)
-# }
-
-```
-
-```{r}
-# find_tau1 <- function(tau){
-#   qtau = quantile(dist_times, tau)
-#   diff = (opt_choice - qtau)^2
-#   return(diff)
-# }
-# find_tau2 <- function(tau){
-#   etau = expectreg::expectile(dist_times, tau)
-#   diff = (opt_choice - etau)^2
-#   return(diff)
-# }
-# 
-# find_tau1 <- function(q,a,b){
-#   tau = (q-a)/(b-a)
-#   return(tau)
-# }
-# find_tau2 <- function(e,a,b){
-#   tau = (a-e)^2/((a-e)^2+(b-e)^2)
-#   return(tau)
-# }
-# #q_{\tau_1}(T) = b\tau_1+a(1-\tau_1)
-# find_q <- function(vec){
-#   tau = vec[1]; a= vec[2]; b = vec[3]
-#   q = b*tau + a*(1-tau)
-#   return(q)
-# }
-# #e_{\tau_2} = \frac{\sqrt\tau_2 b + \sqrt{1-\tau_2}a}{\sqrt\tau_2+\sqrt{1-\tau_2}}
-# find_e <- function(vec){
-#   tau = vec[1]; a= vec[2]; b = vec[3]
-#   e = (b*sqrt(tau) + a*sqrt(1-tau)) / (sqrt(tau)+sqrt(1-tau))
-#   return(e)
-# }
-```
-
-```{r}
-# p=1;r=2
-# for(p in 1:length(players)){
-#   paths_opt_choices = unique(choices$PATH_NAME_UNIQUE[choices$PLAYER_ID == players[p]&choices$CHOSEN==1])#path where we have opt choices
-#   for(r in 1:length(paths_opt_choices)){
-#     # choices 
-#     ind = (choices$PLAYER_ID == players[p]&choices$PATH_NAME_UNIQUE == paths_opt_choices[r]&choices$CHOSEN==1)
-#     opt_choice = as.numeric(choices$dt[ind])
-#     dt_min = as.numeric(choices$dt_min[ind])
-#     dt_max = as.numeric(choices$dt_max[ind])
-#     # preferences
-#     tau1 = find_tau1(opt_choice,dt_min, dt_max)
-#     tau2 = find_tau2(opt_choice,dt_min, dt_max)
-#     # predict for other choices
-#     indho = choices$PLAYER_ID == players[p]&choices$PATH_NAME_UNIQUE != paths_opt_choices[r]&choices$CHOSEN==1
-#     opt_choice_holdout = data.frame(opt_choice=as.numeric(choices$dt[indho]), tau1 = tau1, tau2=tau2, dt_min=as.numeric(choices$dt_min[indho]), dt_max=as.numeric(choices$dt_max[indho]))
-#     q_preds = apply(opt_choice_holdout[,-c(1,3)],1,find_q)
-#     e_preds = apply(opt_choice_holdout[,-c(1,2)],1,find_e)
-#     opt_choice_holdout = cbind(opt_choice_holdout, q_preds, e_preds)
-#   }
-# }
-```
 
 
 ```{r warning=FALSE}
-#p=1;r=2
 mse1 <- mse2 <- alpha1<-beta1<-gamma1<-alpha2<-beta2<-gamma2<-prop1<-prop2<-mods<-prop<-prop12<-prop22<-NULL
 for(p in 1:length(players)){
   paths_opt_choices = unique(choices$PATH_NAME_UNIQUE[choices$PLAYER_ID == players[p]&choices$CHOSEN==1])#path where we have opt choices
@@ -1680,8 +1454,6 @@ mse_mixed = c(mse1[mods=="mod1"], mse2[mods=="mod2"])
 
 #prepare the table
 tab = data.frame(Specification = c("Model 1", "Model 2", "Model 1 or Model 2"), Scheduling_Loss = c("linear","quadratic", "linear or quadratic"), RMSPE = c(round(sqrt(mean(mse1)),4),round(sqrt(mean(mse2)),4), round(sqrt(mean(mse_mixed)),4)), Proportion_Correct = round(c(sum(prop1)/length(prop1), sum(prop2)/length(prop2), sum(prop)/length(prop)),4), Proportion_Participants = c(round(table(mods)/length(mods),4),1)
-                # ,r_1 = c(mean(alpha1/(beta1+gamma1)), mean(alpha2/(beta2+gamma2))), 
-                         #r2 = c(mean(gamma1/(beta1+gamma1)), mean(gamma2/(beta2+gamma2)))
                 )
 ```
 
@@ -1762,29 +1534,6 @@ load("mixmod2.RData")
 
 
 ```{r}
-# x1 <- seq(0, 10, 0.1)
-# hist(tt, freq= FALSE, col=NA,border=NA, ylim=c(0,1),xlim=c(0,10))
-# lines(density(tt), lwd = 2, col = "blue")
-# lines(x1, mixmod$lambda[1]*dgamma(x1, mixmod$gamma.pars[1,1], 1/mixmod$gamma.pars[2,1]),
-#       col="orange", lwd=3)
-# lines(x1, mixmod$lambda[2]*dgamma(x1, mixmod$gamma.pars[1,2], 1/mixmod$gamma.pars[2,2]),
-#       col="magenta", lwd=3)
-# lines(x1, mixmod$lambda[3]*dgamma(x1, mixmod$gamma.pars[1,3], 1/mixmod$gamma.pars[2,3]),col="green", lwd=3)
-# lines(x1, mixmod$lambda[4]*dgamma(x1, mixmod$gamma.pars[1,4], 1/mixmod$gamma.pars[2,4]),col="red", lwd=3)
-# legend("topright", 
-#        legend=c(paste(round(mixmod$lambda[1],3), "* Gamma ~ (",paste(round(mixmod$gamma.pars[1,1],2), round(1/mixmod$gamma.pars[2,1],2), collapse=","),")"),
-#        paste(round(mixmod$lambda[2],3), "* Gamma ~ (",paste(round(mixmod$gamma.pars[1,2],2), round(1/mixmod$gamma.pars[2,2],2), collapse=","),")")
-#        ,paste(round(mixmod$lambda[3],3), "* Gamma ~ (",paste(round(mixmod$gamma.pars[1,3],2), round(1/mixmod$gamma.pars[2,3],2), collapse=","),")")
-#        ,paste(round(mixmod$lambda[4],3), "* Gamma ~ (",paste(round(mixmod$gamma.pars[1,4],2), round(1/mixmod$gamma.pars[2,4],2), collapse=","),")")
-#         ),
-#        fill=c( "orange","magenta"
-#                ,"green", "red"
-#                )
-#   )
-
-```
-
-```{r}
 # CDF of mixture of two gammas
 CDF_gamma <- function(x, shape=mixmod$gamma.pars[1,], scale=mixmod$gamma.pars[2,], p=mixmod$lambda) {
   cdf<-0
@@ -1853,7 +1602,6 @@ caption<-paste0("The estimated parameters of the two-component gamma mixture mod
                escape=F
   )
 
- # mean and var of mixture: https://math.stackexchange.com/questions/3689141/calculating-the-mean-and-standard-deviation-of-a-gaussian-mixture-model-of-two-c
 ```
 
 
@@ -1862,14 +1610,12 @@ As shown in Table \@ref(tab:tabpars), the estimated models for route 1 and route
 ```{r}
 ratios<-seq(1,200,0.1)
 taus<-1 / (1+1/ratios)
-#taus<-c(seq(0.5,0.99,0.01),0.999)
 taus<-c(seq(0.5,0.99,0.01))
 
 beta=0.25
 alpha=2*beta
 ratios<-taus/(1-taus)
 gammas<-ratios*beta
-#which(taus==0.999)
 ```
 
 
@@ -1907,18 +1653,6 @@ for (i in 1:length(tauss)){
   u22[i]<- -(mean(ys2)*alpha+(gamma+beta)*vart2[i])
 }
 
-# # plot utilities
-# plot(tauss,u1, type="l",col=2, axes=F, ylab=bquote(U[a](T,d[a])), xlab=bquote(tau), 
-#      ylim=c(-200,0), xlim=c(0.5,1))
-# lines(tauss,u2,col=4)
-# lines(tauss,u22,col=4, lty=2)
-# lines(tauss,u12,col=2, lty=2)
-# 
-# axis(1)
-# axis(2)
-##The difference between u1s is rather subtile; a stronger preference towards route 2 is revealed by u2.
-
-
 ```
 
 The corresponding optimal departure time choices for both utility types are plotted in Figure \@ref(fig:choices). On the right panel of the figure, we show the estimated optimal choices as quantiles for $U_1$ and expectiles for $U_2$, varying the preference parameter $\tau=\frac{\gamma}{\beta+\gamma}$. We estimate the quantiles and the expectiles based on the fitted mixture distributions using Monte-Carlo approximation and the formulas in \@ref(eq:q) and \@ref(eq:e). 
@@ -1927,32 +1661,22 @@ The corresponding optimal departure time choices for both utility types are plot
 par(lwd=2, mfrow=c(1,2),mar=c(4,3,2,2))
 
 # Create the layout
-#nf <- layout( matrix(c(1,1,2,3), nrow=2, byrow=TRUE))
 den<-density(tt); den2<-density(tt2)
-#plot(den$x,den$y,ylim=c(-0.01,1),axes=F, xlim=c(0,8), main="", xlab="travel time",ylab="density estimate", type="l")
 plot(den$x,den$y,ylim=c(-0.01,0.20),axes=F, xlim=c(0,30), main="", xlab="travel time",ylab="density estimate", type="l")
-#lines(den2$x, den2$y, col="orange")
 lines(den2$x, den2$y, col="gray55", lty=2)
 points(tt, rep(-0.01,length(tt)),pch="|",col=scales::alpha("gray33",0.5))
 par(xpd=T)
-#points(tt2, rep(-0.1,length(tt2)),pch="|",col=scales::alpha("orange",0.5))
 points(tt2, rep(-0.03,length(tt2)),pch="|",col=scales::alpha("gray66",0.5))
 par(xpd=F)
-#points(den$x,PDF_gamma(den$x),col=2, pch=16, cex=0.5)
 axis(1,cex.axis=0.8)
 axis(2, at=c(0,0.1,0.2),las=1,cex.axis=0.8)
 legend(20,0.2,col=c(1, "gray55"),lwd=c(2,2),lty=c(1,2),legend=c("route 1","route 2"),bty="n")
 ############################################
-#plot(taus,qs,ylim=c(1,8),xlim=c(0.7,1),type="l",axes=F,col=NA,xlab=bquote(tau), ylab=bquote(e[tau]~q[tau]))
 plot(taus,qs,ylim=c(5,25),xlim=c(0.5,1),type="l",axes=F,col=NA,xlab=bquote(tau), ylab=bquote(e[tau]~q[tau]))
 
-# points(taus,qse,pch=16,col=scales::alpha(2,0.7),cex=0.5)
-# points(taus,expse,pch=16,col=scales::alpha(4,0.7),cex=0.5)
 lines(taus,exps,col=scales::alpha(4,0.9))
 lines(taus,qs,col=scales::alpha(2,0.9))
 
-# points(taus,qse2,pch=1,col=scales::alpha(2,0.7),cex=0.5)
-# points(taus,expse2,pch=1,col=scales::alpha(4,0.7),cex=0.5)
 lines(taus, exps2,col=scales::alpha(4,0.9) ,lty=2, lwd=2.5)
 lines(taus,qs2,col=scales::alpha(2,0.9),lty=2,lwd=2.5)
 
@@ -1962,19 +1686,6 @@ legend("topleft",col=c(scales::alpha(2,0.9),scales::alpha(4,0.9)),lwd=c(2,2),leg
 legend(0.71,25,col=c(1),lwd=c(2,2),lty=c(1,2),legend=c("route 1","route 2"),bty="n")
 ##################################################
 
-
-# plot(taus,qs,ylim=c(4,20),xlim=c(0.95,1),type="l",col=scales::alpha(2,0.3),axes=F,
-#      xlab=bquote(tau), ylab=bquote(e[tau]~q[tau]))
-# lines(taus,exps,col=scales::alpha(4,0.3))
-# points(taus,qse,pch=16,col=scales::alpha(2,0.4),cex=0.7)
-# points(taus,expse,pch=16,col=scales::alpha(4,0.4),cex=0.7)
-# axis(1,cex.axis=0.8)
-# axis(2,cex.axis=0.8,las=1)
-# legend("topleft",col=c(scales::alpha(2,0.5),scales::alpha(4,0.5)),lwd=c(2,2),legend=c(bquote(d[1]^"*"==q[tau]),bquote(d[2]^"*"==e[tau])),bty="n")
-# legend(0.95,15,col=c(scales::alpha(2,0.5),scales::alpha(4,0.5)),pch=c(16,16),legend=c(bquote(hat(d^"*")[1]==hat(q)[tau]),bquote(hat(d^"*")[2]==hat(e)[tau])),bty="n")
-# par(xpd=T)
-# #arrows(0.999,-1,0.999,qs[taus==0.9991]+0.1,lty=2,col="gray44",code=0,lwd=1)
-# text(0.999,-1,bquote(tau==0.999),col="gray44",cex=0.8,pos=1)
 ```
 
 As shown in Figure \@ref(fig:choices), the optimal departure times under $U_1$ are slightly below the optimal departure times under $U_2$ for lower $\tau$-values. For the $\tau$-values between $0.6$ and $0.7$, the quantile departure times are nearly the same for both routes. For higher $\tau$-values, the quantile departure time choices increasingly reflect the right tail of the distribution, leading to a greater divergence between the routes. In contrast, the evolution of the expectile choices remains even, as it takes both the probabilities and magnitudes into account.
@@ -1984,10 +1695,8 @@ For this example, we also estimate the quantile-expectile correspondences $\tau_
 ```{r}
 ratios<-seq(1,200,0.1)
 taus<-1 / (1+1/ratios)
-#taus<-c(seq(0.5,0.99,0.01),0.999)
 taus<-c(seq(0.5,0.99,0.01))
 ratios<-taus/(1-taus)
-#which(taus==0.999)
 ```
 
 ```{r}
@@ -2054,14 +1763,11 @@ tau_new2 = approx(taus, alphas2, xout=taus) #linear interpolation
 tau_new2$y<-tau_new2$y[-length(tau_new2$y)]
 tau_new2$x<-tau_new2$x[-length(tau_new2$x)]
 
-#tau_neww = approx(c(seq(0.4,0.49,0.01),taus), alphas, xout=taus) # some what more tau vals
-#tau_new$y[tau_new$x==cmp[2]]<-NA
 ttrr2em<-sapply(tau_new$y,ttrrfun,ys=ys,beta=beta,gamma=gamma,alpha=alpha,type=2)# 'matched' rho2 according to the correspondence
 ttrr22em<-sapply(tau_new2$y,ttrrfun,ys=ys2,beta=beta,gamma=gamma,alpha=alpha,type=2)# 'matched' rho2 according to the correspondence
 #empirical
 ttrr2eem<-sapply(tau_new$y,ttrrfun,ys=tt,beta=beta,gamma=gamma,alpha=alpha,type=2)
-#t0<-tau_new$y[tau_new$x==0.999]
-#gg0<-beta*t0/(1-t0)
+
 
 plot(c(tau_new$x),c(tau_new$y),type="l",ylim=c(0.5,1), xlim=c(0.5,1),axes=F, ylab="",xlab="",lwd=2)
 lines(c(tau_new2$x),c(tau_new2$y), lty=2, lwd=2, col="gray44")
@@ -2070,8 +1776,7 @@ for(i in seq(1,50,5)){
   arrows(0,tau_new2$y[i],tau_new2$x[i],tau_new2$y[i],lty=2, col=scales::alpha(4,0.5),code=0, lwd=0.5)
   arrows(tau_new$x[i],0,tau_new$x[i],tau_new2$y[i],lty=1, col=scales::alpha(2,0.5),code=0, lwd=0.5)
 }
-#points(cmp[2],tau_new$y[tau_new$x==cmp[2]],pch=16,cex=0.5,col="white")
-#points(cmp[2],tau_new$y[tau_new$x==cmp[2]],cex=0.5,col="red")
+
 
 par(xpd=T)
 text(0.75,0.3,bquote(tau[1]))
@@ -2079,23 +1784,6 @@ text(0.41,0.75,bquote(tau[2]))
 axis(1, at = seq(0.5,1,0.05), labels=seq(0.5,1,0.05))
 axis(2,las=1)
 legend(0.7,1.1,col=c(1, "gray44"),lwd=c(2,2),lty=c(1,2),legend=c("route 1","route 2"),bty="n")
-# #expectile and quantile ranges
-# 
-# plot(taus, delt1,type="l",col=2, xlab=bquote(tau),ylab=bquote(Delta[1]~Delta[2]))
-# lines(taus,delt2,col=4)
-######################################################
-# #ttrrs
-# par(xpd=F)
-# plot(taus, scale01(ttrr1),type="l",col=2, xlab=bquote(tau),ylab=bquote(rho[1]~rho[2]), ylim=c(0,1),xlim=c(0.5,1),axes=F,lwd=2)
-# lines(taus,scale01(ttrr2),col=4,lwd=2)
-# #points(taus,scale01(ttrr1e),col=scales::alpha(2,0.5), pch =16, cex=0.5)
-# #points(taus,scale01(ttrr2e),col=scales::alpha(4,0.5), pch =16, cex=0.5)
-# axis(1)
-# axis(2,las=1)
-# text(0.75,-20,bquote(tau))
-# #text(0.41,0.75,bquote(tau[2]))
-# legend("topleft",col=c(2,4),lwd=c(2,2),legend=c(bquote(rho[1](tau)),bquote(rho[2](tau))),bty="n",cex=1.5)
-
 ######################################################
 #ttrrs tau-adjusted
 par(xpd=F, lwd=2)
@@ -2104,12 +1792,6 @@ plot(taus[-length(taus)],ttrr1, type="l",col=2, axes=F, ylim=c(0,15), xlim=c(0.5
 lines(taus[-length(taus)],ttrr12,type="l",col=2, lty=2)
 lines(taus[-length(taus)],ttrr2em,type="l",col=4, lty=1)
 lines(taus[-length(taus)],ttrr22em,type="l",col=4, lty=2)
-
-# plot(taus[-length(taus)], scale01(ttrr1),type="l",col=scales::alpha(2,0.5), 
-#      xlab=bquote(tau),ylab=bquote(rho[1]~rho[2]), ylim=c(0,1),xlim=c(0.5,1),axes=F,lwd=2)
-# lines(taus[-length(taus)],scale01(ttrr12),col=scales::alpha(2,0.5),lwd=2, lty=2)
-# lines(taus[-length(taus)],scale01(ttrr2em),col=scales::alpha(4,0.5),lwd=2, lty=1)
-# lines(taus[-length(taus)],scale01(ttrr22em),col=scales::alpha(4,0.5),lwd=2, lty=2)
 
 axis(1, at = seq(0.5,1,0.05), labels=seq(0.5,1,0.05))
 axis(2,las=1)
@@ -2137,165 +1819,3 @@ Finally, we apply our approach to travel time data from Montreal, fitting a mixt
 # Declaration of generative AI and AI-assisted technologies in the writing process{-}
 
 Statement: During the preparation of this work the author used ChatGPT in order to improve the readability and language of the manuscript. After using this tool/service, the author reviewed and edited the content as needed and takes full responsibility for the content of the published article.
-
-
-
-<!--# Appendix {-}
-
-## Example \@ref(exm:duqande){-}
-
-Note that the inverse expectile function can be computed as:
-
-\begin{equation}\tau(e_\tau) = \frac{\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\}}  {2\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} - \mathbb E\{(Y-e_\tau)\}}.\end{equation}(\#eq:invexpfun)
-
-For a mixture of $m$ non-overlapping  uniforms (disjoint supports) with mixing parameter vector $\mathbf p=(p_1,\ldots,p_m)^\top$ where $p_m=1-\sum_{i=1}^{m-1}p_i$ and support edges $a_1<a_2<\ldots<a_m$, the density function $f(y)$ is specified as follows:
-$$f(y)=\sum_{j=1}^m\frac{p_j}{a_{j+1}-a_j}\mathbf 1_{y\in [a_j,a_{j+1}]}.$$
-
-Hence to obtain $\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\}$, we compute:
-
-- for $a_1\leq e_\tau< a_2$:
-
-\begin{align*}\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} &= \int_{a_1}^{e_\tau}(y-e_\tau)\frac{p_1}{a_2-a_1}dy = \frac{p_1}{a_2-a_1}\int_{a_1}^{e_\tau}(y-e_\tau)dy\\
-&= \frac{p_1}{a_2-a_1}[(\frac 12y^2-e_\tau y)]_{a_1}^{e_\tau} = -\frac{p_1}{a_2-a_1}\frac 12 (a_1-e_\tau)^2,\end{align*}
-
-- for $a_2\leq e_\tau< a_3$:
-
-\begin{align*}\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} &= \int_{a_1}^{a_2}(y-e_\tau)\frac{p_1}{a_2-a_1}dy + \int_{a_2}^{e_\tau}(y-e_\tau)\frac{p_2}{a_3-a_2}dy\\
-& = \frac{p_1}{a_2-a_1}\frac 12[(y-e_\tau)^2]_{a_1}^{a_2} + \frac{p_2}{a_3-a_2}\frac 12[(y-e_\tau)^2]_{a_2}^{e_\tau}\\
-&=\frac{p_1}2\cdot (a_2+a_1-2e_\tau) -\frac{p_2}{a_3-a_2}\frac 12 (a_2-e_\tau)^2,\end{align*}
-
-- for $a_i\leq e_\tau< a_{i+1}, 1<i\leq m$:
-
-\begin{align*}\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} &=\int_{a_1}^{a_{i}}(y-e_\tau)f(y)dy +  \int_{a_i}^{e_\tau}(y-e_\tau)f(y)dy\\
-&=\sum_{k=1}^{i-1}\frac{p_k}{a_{k+1}-a_k}\int_{a_k}^{a_{k+1}}(y-e_\tau)dy + \frac{p_i}{a_{i+1}-a_i} \int_{a_i}^{e_\tau}(y-e_\tau)dy\\
-&=\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2\\ &=\left(\sum_{k=1}^{i-1}{p_k}\frac{a_{k+1}+a_{k}}2-p_ke_\tau\right) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2.\end{align*}
-
-In the expression above, the first term represents the weighted mean-expectile difference of mixture components with supports below the $i$th component and the second term measures weighted expectation below $e_\tau$ for the $i$th component.
-
-Also, we have:
-
-$$\mathbb E(Y-e_\tau)  = \sum_{j=1}^mp_j\left(\frac{a_{j+1}+a_j}2\right) -e_\tau,$$
-which is a weighted sum of the component-wise means minus the $\tau$-expectile. Plugging the interval-wise expressions above into \@ref(eq:invexpfun), we obtain the inverse expectile function:
-
-\begin{equation*}\tau(e_\tau) = \begin{cases}
-0,&e_\tau<a_1,\\
-\frac{-\frac 12\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2}  {-\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2- \frac12\sum_{j=1}^mp_j(a_{j+1}+a_j) + e_\tau} ,&a_1\leq e_\tau< a_2,\\
-\frac{\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2}  {\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2- \frac12\sum_{j=1}^mp_j(a_{j+1}+a_j) + e_\tau} ,&a_i\leq e_\tau< a_{i+1},i=2,\ldots, m\\
-1, &e_\tau\geq a_{m+1}.
-\end{cases}\end{equation*}
-
-## Example \@ref(exm:qdzheng){-}
-
-To calculate $\mathbb E\{(Y-\mu_\tau)\mathbf 1_{Y\leq\mu_\tau}\}$, we obtain:
-
-- for $a_0\leq e_\tau< a_1$:
-
-$$\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} = (a_0-e_\tau)p_0.$$
-
-Analogous to the previous example, we have:
-
-- for $a_1\leq e_\tau< a_2$:
-
-\begin{align*}\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} &= (a_0-e_\tau)p_0 + \int_{a_1}^{e_\tau}(y-e_\tau)\frac{p_1}{a_2-a_1}dy\\
-&= (a_0-e_\tau)p_0 -\frac{p_1}{a_2-a_1}\frac 12 (a_1-e_\tau)^2,\end{align*}
-
-- for $a_2\leq \mu_\tau< a_3$:
-
-\begin{align*}\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} &= (a_0-e_\tau)p_0 + \int_{a_1}^{a_2}(y-e_\tau)\frac{p_1}{a_2-a_1}dy + \int_{a_2}^{e_\tau}(y-\mu_\tau)\frac{p_2}{a_3-a_2}dy\\
-&= (a_0-e_\tau)p_0+\frac{p_1}2\cdot (a_2+a_1-2 e_\tau) -\frac{p_2}{a_3-a_2}\frac 12 (a_2-e_\tau)^2,\end{align*}
-
-- for $a_i\leq e_\tau< a_{i+1}, 1<i\leq m$
-
-\begin{align*}\mathbb E\{(Y-e_\tau)\mathbf 1_{Y\leq e_\tau}\} &=(a_0-e_\tau)p_0 + \int_{a_1}^{a_{i}}(y-e_\tau)f(y)dy +  \int_{a_i}^{\mu_\tau}(y-e_\tau)f(y)dy\\
-&=(a_0-e_\tau)p_0+ \sum_{k=1}^{i-1}\frac{p_k}{a_{k+1}-a_k}\int_{a_k}^{a_{k+1}}(y-e_\tau)dy + \frac{p_i}{a_{i+1}-a_i} \int_{a_i}^{e_\tau}(y-e_\tau)dy\\
-&=(a_0-e_\tau)p_0+ \frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2.
-\end{align*}
-
-It holds:
-
-\begin{align*}\mathbb E(Y-e_\tau) &=(a_0-e_\tau)p_0 + \sum_{j=1}^m\frac{p_j}{a_{j+1}-a_j}\int_{a_j}^{a_{j+1}}(y-e_\tau) dy\\
-&=(a_0-e_\tau)p_0+ \sum_{j=1}^m\frac{p_j}2(a_{j+1}+a_j-2 e_\tau).\end{align*}
-
-By plugging in the obtained expressions in \@ref(eq:invexpfun), we obtain the inverse expectile function:
-
-\begin{equation*}\tau(\mu_\tau) = \begin{cases}
-0,&e_\tau<a_0,\\
-(a_0-e_\tau)p_0,&a_0\leq e_\tau<a_1,\\
-\frac{(a_0-e_\tau)p_0-\frac 12\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2}  {2(a_0-e_\tau)p_0-\frac{p_1}{a_2-a_1}(a_1-e_\tau)^2- \frac 12\sum_{j=1}^mp_j(a_{j+1}+a_j -2e_\tau)} ,&a_1\leq e_\tau< a_2,\\
-\frac{(a_0-e_\tau)p_0+\frac 12\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac 12 \cdot \frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2}  {2(a_0-e_\tau)p_0+\sum_{k=1}^{i-1}p_k\cdot (a_{k+1}+a_{k}-2e_\tau) -\frac{p_i}{a_{i+1}-a_i}(a_i-e_\tau)^2- \frac 12\sum_{j=1}^mp_j(a_{j+1}+a_j -2e_\tau)} ,&a_i\leq e_\tau< a_{i+1},i=2,\ldots, m\\
-1, &e_\tau\geq a_{m+1}.
-\end{cases}\end{equation*}
-
-## Example \@ref(exm:corrqe){-}
-
-According to @waltrup2015 (Equation 1.3), the quantile-expectile correspondence can be computed as:
-$$\tau(\omega)=\frac{-\omega q_\omega(T) + G(q_\omega(T))}{-\mathbb ET - 2G(q_\omega(T)) + (1-2\omega)q_\omega(T)},$$
-
-where $G(q) = \int_{-\infty}^qt~dF(t).$
-
-For $\omega <p$, $q_\omega= a_1 + \frac{a_2-a_1} p\omega$, we have:
-$$G(q) = \int_{a_1}^q t\cdot\frac p{a_2-a_1}dt = \frac 12 \frac p{a_2-a_1}(q^2-a_1^2)$$
-
-and for $p<\omega$, $q_\omega = a_3 + \frac{a_4-a_3}{1-p}(\omega-p)$, we have:
-$$G(q) = \int_{a_1}^{a_2} t\cdot\frac p{a_2-a_1}dt + \int_{a_3}^q t\cdot\frac {1-p}{a_2-a_1}dt = \frac 12 p(a_1+a_2) + \frac 12 \frac {1-p}{a_4-a_3}(q^2-a_3^2).$$
-
-
-Hence, we obtain the following quantile-expectile correspondence:
-
-$$\tau(\omega)=\begin{cases}
-\frac{-\omega q_\omega+ \frac 12 \frac p{a_2-a_1}(q_\omega^2-a_1^2)}{-\frac{p(a_1+a_2)}{2}-\frac{(1-p)(a_3+a_4)}{2} - \frac p{a_2-a_1}(q_\omega^2-a_1^2) + (1-2\omega)q_\omega},&q_\omega= a_1 + \frac{a_2-a_1} p\omega, \omega <p,\\
-\frac{-\omega q_\omega(T) + \frac 12 p(a_1+a_2) + \frac 12 \frac {1-p}{a_4-a_3}(q_\omega^2-a_3^2)}{-\frac{(1-p)(a_3+a_4)}{2} - \frac{3p(a_1+a_2)}2 - \frac {1-p}{a_4-a_3}(q^2-a_3^2) + (1-2\omega)q_\omega},&q_\omega = a_3 + \frac{a_4-a_3}{1-p}(\omega-p), p<\omega.
-\end{cases}$$
--->
-
-
-<!--
-```{r}
-#checking for discontinuity of tau-Dev
-#generate samples from mixture of two normals
-m1 = 10
-m2 = 100
-sd = 10
-mpar = 0.1
-N=10000
-
-set.seed(1)
-u = runif(N)
-m12 = ifelse(u>mpar,m1,m2)
-rr = rnorm(N,m12,sd)
-
-```
-
-```{r}
-taus = seq(0.5,0.99,0.01)
-beta = 1
-alpha=2*beta
-
-asym_expfun<-function(ys,tau,type=1){
-  yss<-(ys-mean(ys))/sd(ys)
-  if(type==1){
-    qyss<-quantile(yss,tau)
-  } else {
-    qyss<-expectreg::expectile(yss,tau)
-  }
-  aexp<-(tau*mean((yss-qyss)[yss>qyss]^(type)) + (1-tau)*mean((qyss -yss)[yss<=qyss]^(type)))
-  return(aexp)
-}
-ttrr1<-sapply(taus[-length(taus)],asym_expfun,ys=rr,type=1)
-ttrr2<-sapply(taus[-length(taus)],asym_expfun,ys=rr,type=2)
-```
-
-```{r}
-par(xpd=F, lwd=2)
-
-plot(taus[-length(taus)],ttrr1, type="l",col=2, axes=F, ylim=c(0,5), xlim=c(0.5,1), ylab="",xlab="")
-lines(taus[-length(taus)],ttrr2,type="l",col=4, lty=1)
-
-axis(1, at = seq(0.5,1,0.05), labels=seq(0.5,1,0.05))
-axis(2,las=1)
-par(xpd=T)
-text(0.75,-6,bquote(tau[1,2]))
-legend(0.5,17,col=c(2,4),lwd=c(2,2),legend=c(bquote(Dev[tau]),bquote(Var[tau])),bty="n",cex=1)
-
-```
--->
