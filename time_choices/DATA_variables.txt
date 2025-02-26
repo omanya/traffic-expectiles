@@ -1,0 +1,33 @@
+The data is organized in long format. For a give choice problem (CHOIDE_ID), there are several rows 
+representing an alternative departure time interval - route. The variable that changes for each departure time 
+interval is the travel time information (TT_INFO). Each choice problem begins with a departure time (DEP_TIME_INI), the participant
+can then move it forward or backwards to select the desire departure time (DEP_TIME). When moving the departure time,
+the travel time information changes in the three alternative routes by periods of 5 minutes (PERIOD_INI5 - PERIOD_FIN5).
+
+
+
+VARIABLES						DESCRIPTION
+                        	
+
+CHOICE_ID           		Identifies the choice faced by the participant. Three rows have the same ID: one per alternative.
+PLAYER_ID           		Unique identifier of the participants
+OD_ID                  		Identifier of OD pair. The identifier is composed of Origin-Destination (see below)
+PATH_NAME_UNIQUE			Identifier of the alternative route
+PATH_NAME					Identifier of the route inside the choice problem 
+ROUTEDT_ID					Identifier of the departure time - route
+CHOSEN              		=1 when the route was chosen =0 otherwise
+PERIOD_INI5					Lower bound of the departure time period
+PERIOD_FIN5					Upper bound of the departure time period
+DEP_TIME 					Actual chosen departure time, i.e., the departure time of the chosen alternative.
+DEP_TIME_INI				The default departure time at the beginning of the choice problem
+OBJECTIVE_ARR_TIME			Objective arrival time. Early and late arrivals are penalised.				
+TT_INFO             		Informed travel time at the moment of departure
+EAT_max						Max estimated time at arrival (PERIOD_FIN5 + TT_INFO)
+EAT_min						Min estimated time at arrival (PERIOD_INI5 + TT_INFO)
+ELATE_max					Max expected lateness (EAT_max - ARR_TIME_INI)
+ELATE_min					Min expected lateness (EAT_min - ARR_TIME_INI)
+LENGTH_KM           		Length of the route
+DIRECTNESS         			Directness of the route (euclidean distance / length of the route)
+N_TURNS_KM          		Number of turns per KM
+FREEWAY_PERC     			Percentage of freeway in the route composition
+

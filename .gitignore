@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+Data/
+old/
+literature/
+.pdf
+.tex
+.spl
+.bib
+traffic-expectiles-files/
